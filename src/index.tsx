@@ -4,7 +4,7 @@ import './index.css';
 import App from './App';
 
 import 'bootstrap/dist/css/bootstrap.min.css';
-import 'bootswatch/dist/morph/bootstrap.min.css'
+// import 'bootswatch/dist/morph/bootstrap.min.css'
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement

@@ -5,5 +5,5 @@ interface MapProp {
 };
 
 export default function Map(props: MapProp) {
-  return <></>;
+  return <>TODO: Mick</>;
 }

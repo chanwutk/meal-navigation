@@ -21,14 +21,14 @@ export default function PreferencesPopup({show, handleClose, preferences, setPre
     return k in preferences;
   }
 
-  function makeEntry(name: string) {
+  function makeEntry(name: string, index: number) {
     if (!isKey(name)) {
       throw new Error();
     }
 
     return <PreferenceEntry
+      key={index}
       name={name}
-      value={preferences[name]}
       setValue={changePreference(name)}
     />;
   }
