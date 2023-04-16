@@ -1,10 +1,7 @@
 import React, {useEffect, useState} from 'react';
-import { Button } from 'react-bootstrap';
+import { Container, Tab, Tabs } from 'react-bootstrap';
 
-import Tab from 'react-bootstrap/Tab';
-import Tabs from 'react-bootstrap/Tabs';
-
-import PreferencesPopup from './components/preference-popup';
+import UserPreferences from './pages/user-preferences';
 import IngredientSelection from './pages/ingredient-selection';
 import Map from './pages/map';
 import MealSelection from './pages/meal-selection';
@@ -12,10 +9,7 @@ import { Preferences } from './types';
 import loadPreferences, {defaultPreferences} from './utils/load-preferences';
 
 function App() {
-  const [showPopup, setShowPopup] = useState<boolean>(false);
   const [preferences, setPreferences] = useState<Preferences>(defaultPreferences);
-
-  const handleClosePopup = () => setShowPopup(false);
 
   useEffect(() => {
     const preferences = loadPreferences();
@@ -23,19 +17,18 @@ function App() {
   }, []);
 
   return (
-    <div className="m-3">
-      <PreferencesPopup
-        show={showPopup}
-        handleClose={handleClosePopup}
-        preferences={preferences}
-        setPreferences={setPreferences}
-      />
-      <Button onClick={() => setShowPopup(true)}>User Preferences</Button>
+    <Container className="m-3">
       <Tabs
         defaultActiveKey="profile"
         id="uncontrolled-tab-example"
         className="mb-3 mt-3"
       >
+        <Tab eventKey="preferences" title="User Preferences">
+          <UserPreferences
+            preferences={preferences}
+            setPreferences={setPreferences}
+          />
+        </Tab>
         <Tab eventKey="meal" title="Meal Selection">
           <MealSelection />
         </Tab>
@@ -46,7 +39,7 @@ function App() {
           <Map />
         </Tab>
       </Tabs>
-    </div>
+    </Container>
   );
 }
 
