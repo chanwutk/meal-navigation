@@ -1,4 +1,4 @@
-import React from 'react';
+import {ChangeEvent} from 'react';
 import { Form } from 'react-bootstrap';
 
 interface PreferenceEntryProp {
@@ -7,7 +7,7 @@ interface PreferenceEntryProp {
 }
 
 export default function PreferenceEntry({name, setValue}: PreferenceEntryProp) {
-  function changeToggle(e: React.ChangeEvent<HTMLInputElement>) {
+  function changeToggle(e: ChangeEvent<HTMLInputElement>) {
     return setValue(e.currentTarget.checked)
   }
 

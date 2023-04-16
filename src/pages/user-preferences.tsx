@@ -1,13 +1,12 @@
-import React from 'react';
+import {Dispatch, SetStateAction} from 'react';
 
 import {Preferences} from '../types';
 import PreferenceEntry from '../components/preference-entry';
 import {types} from '../utils/is-preferences';
-import { Container } from 'react-bootstrap';
 
 interface UserPreferencesProp {
   preferences: Preferences;
-  setPreferences: React.Dispatch<React.SetStateAction<Preferences>>;
+  setPreferences: Dispatch<SetStateAction<Preferences>>;
 };
 
 export default function UserPreferences({preferences, setPreferences}: UserPreferencesProp) {

@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import {useEffect, useState} from 'react';
 import { Container, Tab, Tabs } from 'react-bootstrap';
 
 import UserPreferences from './pages/user-preferences';
@@ -8,7 +8,7 @@ import MealSelection from './pages/meal-selection';
 import { Preferences } from './types';
 import loadPreferences, {defaultPreferences} from './utils/load-preferences';
 
-function App() {
+export default function App() {
   const [preferences, setPreferences] = useState<Preferences>(defaultPreferences);
 
   useEffect(() => {
@@ -42,5 +42,3 @@ function App() {
     </Container>
   );
 }
-
-export default App;
