@@ -3,13 +3,15 @@ import {Dispatch, SetStateAction} from 'react';
 import {Preferences} from '../types';
 import PreferenceEntry from '../components/preference-entry';
 import {types} from '../utils/is-preferences';
+import Page from '../components/page';
 
 interface UserPreferencesProp {
   preferences: Preferences;
   setPreferences: Dispatch<SetStateAction<Preferences>>;
+  onNext: () => void;
 };
 
-export default function UserPreferences({preferences, setPreferences}: UserPreferencesProp) {
+export default function UserPreferences({preferences, setPreferences, onNext}: UserPreferencesProp) {
   const changePreference = (key: keyof Preferences) =>
     (value: boolean) =>
       setPreferences({...preferences, [key]: value});
@@ -30,7 +32,7 @@ export default function UserPreferences({preferences, setPreferences}: UserPrefe
     />;
   }
 
-  return <div className="m-2">
+  return <Page onNext={onNext}>
     {Object.keys(types).map(makeEntry)}
-  </div>;
+  </Page>;
 }
