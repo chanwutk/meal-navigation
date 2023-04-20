@@ -7,6 +7,6 @@ interface MealSelectionProp {
 
 export default function MealSelection({onBack, onNext}: MealSelectionProp) {
   return <Page onNext={onNext} onBack={onBack}>
-    TODO: Meal Selection
+    TODO: Xinyuan please look at src/pages/meal-selection.tsx
   </Page>;
 }
