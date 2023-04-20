@@ -4,7 +4,7 @@ import { Button } from "react-bootstrap";
 interface NavigationProp {
   onBack?: () => void;
   onNext?: () => void;
-  children?: (string | ReactElement<any, string | JSXElementConstructor<any>>)[];
+  children?: (string | ReactElement<any, string | JSXElementConstructor<any>>)[] | string;
 }
 
 export default function Page({onBack, onNext, children}: NavigationProp) {
