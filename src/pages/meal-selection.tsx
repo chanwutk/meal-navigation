@@ -43,6 +43,7 @@ export default function MealSelection({onBack, onNext}: MealSelectionProp) {
           {daysOfWeek.map((day: string) => (
             <React.Fragment key={day}>
               <h3>{day}</h3>
+              {<p>You have selected: {selectedMeals[day]}</p>}
               <select value={selectedMeals[day]} onChange={(event) => handleMealSelection(event, day)}>
                 <option value="">Select a meal...</option>
                 <option value="hamburger">Hamburger</option>
@@ -51,7 +52,6 @@ export default function MealSelection({onBack, onNext}: MealSelectionProp) {
                 <option value="tacos">Tacos</option>
                 <option value="sushi">Sushi</option>
               </select>
-              {selectedMeals[day] && <p>You have selected: {selectedMeals[day]}</p>}
             </React.Fragment>
           ))}
         </div>
