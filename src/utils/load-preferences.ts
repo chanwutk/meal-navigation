@@ -7,7 +7,10 @@ export const defaultPreferences: Preferences = {
 };
 
 export default function loadPreferences() {
-  const preferences = JSON.parse(localStorage.getItem('__meal_navigation__preferences') ?? 'null') ?? defaultPreferences;
+  const preferences = {
+    ...defaultPreferences,
+    ...JSON.parse(localStorage.getItem('__meal_navigation__preferences') ?? '{}')
+  };
 
   if (!isPreferences(preferences)) {
     throw new Error();

@@ -1,19 +1,13 @@
-import {Dispatch, SetStateAction} from 'react';
-
 import {Preferences} from '../types';
 import PreferenceEntry from '../components/preference-entry';
-import {types} from '../utils/is-preferences';
+import { useEffect } from 'react';
 
 interface UserPreferencesProp {
   preferences: Preferences;
-  setPreferences: Dispatch<SetStateAction<Preferences>>;
+  setPreferences: (p: Preferences) => void;
 };
 
 export default function UserPreferences({preferences, setPreferences}: UserPreferencesProp) {
-  const changePreference = (key: keyof Preferences) =>
-    (value: boolean) =>
-      setPreferences({...preferences, [key]: value});
-
   function isKey(k: string): k is keyof Preferences {
     return k in preferences;
   }
@@ -26,11 +20,14 @@ export default function UserPreferences({preferences, setPreferences}: UserPrefe
     return <PreferenceEntry
       key={index}
       name={name}
-      setValue={changePreference(name)}
+      value={preferences[name]}
+      setValue={(value) => setPreferences({...preferences, [name]: value})}
     />;
   }
 
   return <>
-    {Object.keys(types).map(makeEntry)}
+    {Object.keys({
+      ...preferences,
+    }).map(makeEntry)}
   </>;
 }

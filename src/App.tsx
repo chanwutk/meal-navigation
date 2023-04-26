@@ -7,10 +7,11 @@ import GrocerySelection from './pages/grocery-selection';
 import MealSelection from './pages/meal-selection';
 import { Preferences } from './types';
 import loadPreferences, {defaultPreferences} from './utils/load-preferences';
+import savePreferences from './utils/save-preferences';
 
 export type NavKey = 'user-pref' | 'meal-sel' | 'ingr-sel' | 'groc-sel';
 
-const navKies = ['user-pref', 'meal-sel', 'ingr-sel', 'groc-sel'] as const;
+const navKeys = ['user-pref', 'meal-sel', 'ingr-sel', 'groc-sel'] as const;
 
 export default function App() {
   const [preferences, setPreferences] = useState<Preferences>(defaultPreferences);
@@ -27,9 +28,37 @@ export default function App() {
     return key === activeTab ? {} : {display: 'none'};
   }
 
+  function handleNext() {
+    const idx = navKeys.findIndex(d => d === activeTab) + 1;
+    if (idx < navKeys.length) {
+      setActiveTab(navKeys[idx]);
+    }
+  }
+
+  function handlePrev() {
+    const idx = navKeys.findIndex(d => d === activeTab) - 1;
+    if (idx >= 0) {
+      setActiveTab(navKeys[idx]);
+    }
+  }
+
+  function handleKeyPressed(ev: KeyboardEvent) {
+    // TODO: currently broken
+    if (ev.key === 'ArrowLeft') {
+      handlePrev();
+    } else if (ev.key === 'ArrowRight') {
+      handleNext();
+    }
+  }
+
   useEffect(() => {
     const preferences = loadPreferences();
     setPreferences(preferences);
+    window.addEventListener('keydown', handleKeyPressed);
+    return () => {
+      savePreferences(preferences);
+      window.removeEventListener('keydown', handleKeyPressed);
+    };
   }, []);
 
   return (
@@ -57,11 +86,15 @@ export default function App() {
       <div style={activateStyle('groc-sel')}><GrocerySelection
         show={activeTab === 'groc-sel'}
       /></div>
+
       <Container>
         <div style={activateStyle('user-pref')}>
           <UserPreferences
             preferences={preferences}
-            setPreferences={setPreferences}
+            setPreferences={(preferences) => {
+              savePreferences(preferences);
+              setPreferences(preferences);
+            }}
           />
         </div>
         <div style={activateStyle('meal-sel')}>
@@ -71,13 +104,18 @@ export default function App() {
           <IngredientSelection/>
         </div>
       </Container>
-      <ButtonGroup style={{width: 300, left: '50%', transform: 'translate(-50%, -50%)'}} size="lg" className="mb-2 position-fixed fixed-bottom">
+
+      <ButtonGroup
+        style={{maxWidth: 400, left: '50%', transform: 'translate(-50%, -50%)'}}
+        size="lg"
+        className="mb-2 position-fixed fixed-bottom"
+      >
         <Button
-          onClick={() => setActiveTab(navKies[navKies.findIndex(d => d === activeTab) - 1])}
+          onClick={handlePrev}
           disabled={activeTab === 'user-pref'}
         >Back</Button>
         <Button
-          onClick={() => setActiveTab(navKies[navKies.findIndex(d => d === activeTab) + 1])}
+          onClick={handleNext}
           disabled={activeTab === 'groc-sel'}
         >Next</Button>
       </ButtonGroup>

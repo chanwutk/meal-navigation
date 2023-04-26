@@ -3,10 +3,11 @@ import { Form } from 'react-bootstrap';
 
 interface PreferenceEntryProp {
   name: string;
+  value: boolean;
   setValue: (v: boolean) => void;
 }
 
-export default function PreferenceEntry({name, setValue}: PreferenceEntryProp) {
+export default function PreferenceEntry({name, value, setValue}: PreferenceEntryProp) {
   function changeToggle(e: ChangeEvent<HTMLInputElement>) {
     return setValue(e.currentTarget.checked)
   }
@@ -18,6 +19,7 @@ export default function PreferenceEntry({name, setValue}: PreferenceEntryProp) {
         type="switch"
         id={"custom-switch-" + name}
         onChange={changeToggle}
+        checked={value}
       />
     </Form>
   </div>);
