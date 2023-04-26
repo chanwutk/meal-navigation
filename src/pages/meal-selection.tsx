@@ -1,15 +1,7 @@
-import Page from "../components/page";
 import React from 'react';
 import { useState } from "react";
 
 interface MealSelectionProp {
-  onNext: () => void;
-  onBack: () => void;
-};
-
-interface MealSelectionProp {
-  onNext: () => void;
-  onBack: () => void;
 };
 
 interface MenuOption {
@@ -27,7 +19,7 @@ const menuOptions: MenuOption[] = [
 
 const daysOfWeek = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday","Saturday","Sunday"];
 
-export default function MealSelection({onBack, onNext}: MealSelectionProp) {
+export default function MealSelection({}: MealSelectionProp) {
   const daysOfWeek = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
   const [selectedMeals, setSelectedMeals] = useState<{[key: string]: string}>({});
 

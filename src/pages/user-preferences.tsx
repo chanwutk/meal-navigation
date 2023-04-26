@@ -3,15 +3,13 @@ import {Dispatch, SetStateAction} from 'react';
 import {Preferences} from '../types';
 import PreferenceEntry from '../components/preference-entry';
 import {types} from '../utils/is-preferences';
-import Page from '../components/page';
 
 interface UserPreferencesProp {
   preferences: Preferences;
   setPreferences: Dispatch<SetStateAction<Preferences>>;
-  onNext: () => void;
 };
 
-export default function UserPreferences({preferences, setPreferences, onNext}: UserPreferencesProp) {
+export default function UserPreferences({preferences, setPreferences}: UserPreferencesProp) {
   const changePreference = (key: keyof Preferences) =>
     (value: boolean) =>
       setPreferences({...preferences, [key]: value});

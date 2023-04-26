@@ -1,9 +1,9 @@
 import {useEffect, useState} from 'react';
-import { Container, Tab, Tabs, Navbar, Nav, Button } from 'react-bootstrap';
+import { Container, Navbar, Nav, Button, ButtonGroup, ButtonToolbar } from 'react-bootstrap';
 
 import UserPreferences from './pages/user-preferences';
 import IngredientSelection from './pages/ingredient-selection';
-import Map from './pages/map';
+import GrocerySelection from './pages/grocery-selection';
 import MealSelection from './pages/meal-selection';
 import { Preferences } from './types';
 import loadPreferences, {defaultPreferences} from './utils/load-preferences';
@@ -54,43 +54,33 @@ export default function App() {
         </Container>
       </Navbar>
 
-      <div style={activateStyle('groc-sel')}><Map
-        onBack={() => setActiveTab('ingr-sel')}
+      <div style={activateStyle('groc-sel')}><GrocerySelection
+        show={activeTab === 'groc-sel'}
       /></div>
       <Container>
         <div style={activateStyle('user-pref')}>
           <UserPreferences
             preferences={preferences}
             setPreferences={setPreferences}
-            onNext={() => setActiveTab('meal-sel')}
           />
         </div>
         <div style={activateStyle('meal-sel')}>
-          <MealSelection
-            onBack={() => setActiveTab('user-pref')}
-            onNext={() => setActiveTab('ingr-sel')}
-          />
+          <MealSelection/>
         </div>
         <div style={activateStyle('ingr-sel')}>
-          <IngredientSelection
-            onBack={() => setActiveTab('meal-sel')}
-            onNext={() => setActiveTab('groc-sel')}
-          />
-        </div>
-
-        <div className='d-flex flex-row justify-content-end m-2 mt-4'>
-          <Button
-            onClick={() => setActiveTab(navKies[navKies.findIndex(d => d === activeTab) - 1])}
-            className="ms-2"
-            disabled={activeTab === 'user-pref'}
-          >Back</Button>
-          <Button
-            onClick={() => setActiveTab(navKies[navKies.findIndex(d => d === activeTab) + 1])}
-            className="ms-2"
-            disabled={activeTab === 'groc-sel'}
-          >Next</Button>
+          <IngredientSelection/>
         </div>
       </Container>
+      <ButtonGroup style={{width: 300, left: '50%', transform: 'translate(-50%, -50%)'}} size="lg" className="mb-2 position-fixed fixed-bottom">
+        <Button
+          onClick={() => setActiveTab(navKies[navKies.findIndex(d => d === activeTab) - 1])}
+          disabled={activeTab === 'user-pref'}
+        >Back</Button>
+        <Button
+          onClick={() => setActiveTab(navKies[navKies.findIndex(d => d === activeTab) + 1])}
+          disabled={activeTab === 'groc-sel'}
+        >Next</Button>
+      </ButtonGroup>
     </>
   );
 }
