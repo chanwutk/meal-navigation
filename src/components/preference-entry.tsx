@@ -12,7 +12,7 @@ export default function PreferenceEntry({name, value, setValue}: PreferenceEntry
     return setValue(e.currentTarget.checked)
   }
 
-  return (<div className='d-flex flex-row justify-content-between'>
+  return (<div className='d-flex flex-row justify-content-between m-4'>
     <div>{name}</div>
     <Form>
       <Form.Check 
