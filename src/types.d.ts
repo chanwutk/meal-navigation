@@ -1,6 +1,6 @@
 export type Preferences = {
-  'Vegetarian': boolean;
-  'Cilantro': boolean;
-  'Lamb': boolean;
-  'Pork': boolean;
+  Vegetarian: boolean;
+  Cilantro: boolean;
+  Lamb: boolean;
+  Pork: boolean;
 };
