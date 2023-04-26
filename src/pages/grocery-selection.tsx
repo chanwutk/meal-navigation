@@ -1,14 +1,12 @@
-import { MapContainer, Marker, Popup, TileLayer, useMap } from "react-leaflet";
+import { Icon, LatLngTuple } from "leaflet";
+import { MapContainer, Marker, Popup, TileLayer, useMap, Polyline } from "react-leaflet";
 import { useEffect, useState } from "react";
-import {GeoJSON} from 'geojson';
-import { data } from '../data/data';
-
-import { Icon } from "leaflet";
 import markerIconPng from 'leaflet/dist/images/marker-icon.png';
 
+import { data } from '../data/data';
+import { paths } from '../data/paths';
+
 import 'leaflet/dist/leaflet.css';
-import { LatLngTuple } from "leaflet";
-import getDirections from "../utils/get-directions";
 
 
 const CURRENT_LOCATION: LatLngTuple = [37.876070, -122.258502]
@@ -24,6 +22,7 @@ const TILES = {
   stamen: "https://stamen-tiles-{s}.a.ssl.fastly.net/toner-lite/{z}/{x}/{y}{r}.png",
   stadia: "https://tiles.stadiamaps.com/tiles/osm_bright/{z}/{x}/{y}{r}.png",
 };
+const ATTRIBUTION = '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors';
 
 interface MapOpsProp {
   show: boolean;
@@ -39,13 +38,9 @@ function MapOps({show}: MapOpsProp) {
   return null;
 }
 
-type Path = {
-  end: [number, number];
-  path: GeoJSON;
-};
-
 export default function GrocerySelection({show, meals}: GrocerySelectionProp) {
-  const [directions, setDirections] = useState<{[k: string]: Path}>({});
+  // const [directions, setDirections] = useState<{[k: string]: Path}>({});
+  const [activeMarker, setActiveMarker] = useState<string>('');
 
   useEffect(() => {
     const _stores: {
@@ -65,44 +60,42 @@ export default function GrocerySelection({show, meals}: GrocerySelectionProp) {
       })
     });
 
-    try {
-      if (Object.keys(directions).length > 0) {
-        return;
-      }
-      const d: {[k: string]: Path} = {}
-      getDirections(CURRENT_LOCATION, ..._stores.map(d => d.location))
-        .then(v => v.json())
-        .then((geojsons: GeoJSON[]) => {
-          geojsons.map((geojson, i) => {
-            d[_stores[i].name + '_' + _stores[i].address] = {
-              end: _stores[i].location,
-              path: geojson,
-            };
-          })
-          setDirections(d);
-        })
-        .catch(err => console.log(err));
-    } catch (e) {
-      console.error(e)
-    }
+    // try {
+    //   if (Object.keys(directions).length > 0) {
+    //     return;
+    //   }
+    //   const d: {[k: string]: Path} = {}
+    //   getDirections(CURRENT_LOCATION, ..._stores.map(d => d.location))
+    //     .then(v => v.json())
+    //     .then((geojsons: GeoJSON[]) => {
+    //       geojsons.map((geojson, i) => {
+    //         d[_stores[i].name + '_' + _stores[i].address] = {
+    //           end: _stores[i].location,
+    //           path: geojson,
+    //         };
+    //       })
+    //       setDirections(d);
+    //     })
+    //     .catch(err => console.log(err));
+    // } catch (e) {
+    //   console.error(e)
+    // }
   }, []);
 
-  useEffect(() => {
-    console.log(directions);
-    console.log(JSON.stringify(directions));
-  }, [directions]);
+  // useEffect(() => {
+  //   console.log(directions);
+  //   console.log(JSON.stringify(directions));
+  // }, [directions]);
 
   return<MapContainer
       center={CURRENT_LOCATION}
       zoom={16}
       scrollWheelZoom={true}
       zoomControl={false}
+      minZoom={12}
     >
     <MapOps show={show} />
-    <TileLayer
-      attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-      url={TILES.osm}
-    />
+    <TileLayer attribution={ATTRIBUTION} url={TILES.osm} />
     <Marker
       position={CURRENT_LOCATION}
       icon={new Icon({
@@ -111,21 +104,29 @@ export default function GrocerySelection({show, meals}: GrocerySelectionProp) {
         iconAnchor: [12.5, 41],
         popupAnchor: [0, -41],
       })}
-    >
-      <Popup>You are here.</Popup>
-    </Marker>
-    {Object.entries(directions).map(([key, value], i) =>
+    ><Popup>You are here.</Popup></Marker>
+    {Object.entries(paths)
+      .sort(([k1, _v1], [k2, _v2]) => (+(k1 === activeMarker) - +(k2 === activeMarker)))
+      .map(([key, value], i) =>
+        <Polyline
+          key={'line-' + i}
+          positions={value.path.features[0].geometry.coordinates.map(([lat, lon]) => [lon, lat])}
+          pathOptions={activeMarker === key ? {color: 'red', opacity: 1} : {color: 'gray', opacity: .5}}
+        ></Polyline>
+    )}
+    {Object.entries(paths).map(([key, value], i) =>
       <Marker
-        key={i}
-        position={value.end}
+        key={'marker-' + i}
+        position={value.end as [number, number]}
         icon={new Icon({
           iconUrl: markerIconPng,
           iconSize: [25, 41],
           iconAnchor: [12.5, 41],
           popupAnchor: [0, -41],
         })}
+        eventHandlers={{click: () => setActiveMarker(key === activeMarker ? '' : key)}}
       >
-        <Popup>{key.split('_').join(': ')}</Popup>
+        <Popup closeOnClick closeOnEscapeKey>{key.split('_').join(': ')}</Popup>
       </Marker>
     )}
   </MapContainer>
