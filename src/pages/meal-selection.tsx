@@ -36,7 +36,7 @@ export default function MealSelection({onBack, onNext}: MealSelectionProp) {
   };
 
   return (
-    <Page onNext={onNext} onBack={onBack}>
+    <>
       <div>
         <h2>Select meals for the week:</h2>
         <div>
@@ -57,6 +57,6 @@ export default function MealSelection({onBack, onNext}: MealSelectionProp) {
         </div>
       </div>
       <button hidden={true}>Next</button>
-    </Page>
+    </>
   );
 }

@@ -32,7 +32,7 @@ export default function UserPreferences({preferences, setPreferences, onNext}: U
     />;
   }
 
-  return <Page onNext={onNext}>
+  return <>
     {Object.keys(types).map(makeEntry)}
-  </Page>;
+  </>;
 }

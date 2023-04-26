@@ -1,5 +1,5 @@
 import {useEffect, useState} from 'react';
-import { Container, Tab, Tabs, Navbar, Nav } from 'react-bootstrap';
+import { Container, Tab, Tabs, Navbar, Nav, Button } from 'react-bootstrap';
 
 import UserPreferences from './pages/user-preferences';
 import IngredientSelection from './pages/ingredient-selection';
@@ -9,6 +9,8 @@ import { Preferences } from './types';
 import loadPreferences, {defaultPreferences} from './utils/load-preferences';
 
 export type NavKey = 'user-pref' | 'meal-sel' | 'ingr-sel' | 'groc-sel';
+
+const navKies = ['user-pref', 'meal-sel', 'ingr-sel', 'groc-sel'] as const;
 
 export default function App() {
   const [preferences, setPreferences] = useState<Preferences>(defaultPreferences);
@@ -52,7 +54,10 @@ export default function App() {
         </Container>
       </Navbar>
 
-      <Container fluid>
+      <div style={activateStyle('groc-sel')}><Map
+        onBack={() => setActiveTab('ingr-sel')}
+      /></div>
+      <Container>
         <div style={activateStyle('user-pref')}>
           <UserPreferences
             preferences={preferences}
@@ -72,9 +77,19 @@ export default function App() {
             onNext={() => setActiveTab('groc-sel')}
           />
         </div>
-        <div style={activateStyle('groc-sel')}><Map
-          onBack={() => setActiveTab('ingr-sel')}
-        /></div>
+
+        <div className='d-flex flex-row justify-content-end m-2 mt-4'>
+          <Button
+            onClick={() => setActiveTab(navKies[navKies.findIndex(d => d === activeTab) - 1])}
+            className="ms-2"
+            disabled={activeTab === 'user-pref'}
+          >Back</Button>
+          <Button
+            onClick={() => setActiveTab(navKies[navKies.findIndex(d => d === activeTab) + 1])}
+            className="ms-2"
+            disabled={activeTab === 'groc-sel'}
+          >Next</Button>
+        </div>
       </Container>
     </>
   );

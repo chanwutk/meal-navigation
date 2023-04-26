@@ -6,7 +6,7 @@ interface IngredientSelectionProp {
 };
 
 export default function IngredientSelection({onNext, onBack}: IngredientSelectionProp) {
-  return <Page onNext={onNext} onBack={onBack}>
+  return <>
     TODO: Sunny please look at src/pages/ingredient-selection.tsx
-  </Page>;
+  </>;
 }

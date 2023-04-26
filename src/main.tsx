@@ -4,6 +4,7 @@ import App from './App'
 import './index.css'
 
 import 'bootstrap/dist/css/bootstrap.min.css';
+import 'leaflet/dist/leaflet.css';
 // import 'bootswatch/dist/morph/bootstrap.min.css'
 
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
