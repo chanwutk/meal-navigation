@@ -1,7 +1,11 @@
 import React from 'react';
 import { useState } from "react";
+import IngredientSelection from './ingredient-selection';
 
 interface MealSelectionProp {
+  //Make it global
+  selectedMeals: {[key: string]: string};
+  setSelectedMeals: React.Dispatch<React.SetStateAction<{[key: string]: string}>>;
 };
 
 interface MenuOption {
@@ -19,9 +23,9 @@ const menuOptions: MenuOption[] = [
 
 const daysOfWeek = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday","Saturday","Sunday"];
 
-export default function MealSelection({}: MealSelectionProp) {
+export default function MealSelection({ selectedMeals, setSelectedMeals }: MealSelectionProp) {
   const daysOfWeek = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
-  const [selectedMeals, setSelectedMeals] = useState<{[key: string]: string}>({});
+  // const [selectedMeals, setSelectedMeals] = useState<{[key: string]: string}>({});
 
   const handleMealSelection = (event: React.ChangeEvent<HTMLSelectElement>, day: string) => {
     setSelectedMeals({...selectedMeals, [day]: event.target.value});
