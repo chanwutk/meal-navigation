@@ -18,6 +18,7 @@ export default function App() {
   const [activeTab, setActiveTab] = useState<NavKey>('user-pref');
   //Sunny tried this
   const [selectedMeals, setSelectedMeals] = useState<{[key: string]: string}>({});
+  const [selectedBrands, setSelectedBrands] = useState<{[key: string]: string}>({});
 
   function handleTabChange(eventKey: string | null) {
     if (eventKey !== 'user-pref' && eventKey !== 'meal-sel' && eventKey !== 'ingr-sel' && eventKey !== 'groc-sel') {
@@ -104,7 +105,7 @@ export default function App() {
           <MealSelection selectedMeals={selectedMeals} setSelectedMeals={setSelectedMeals}/>
         </div>
         <div style={activateStyle('ingr-sel')}>
-          <IngredientSelection selectedMeals={selectedMeals}/>
+          <IngredientSelection selectedMeals={selectedMeals} selectedBrands={selectedBrands} setSelectedBrands={setSelectedBrands}/>
         </div>
       </Container>
 
