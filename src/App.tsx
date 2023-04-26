@@ -87,6 +87,7 @@ export default function App() {
 
       <div style={activateStyle('groc-sel')}><GrocerySelection
         show={activeTab === 'groc-sel'}
+        meals={[]}
       /></div>
 
       <Container>
