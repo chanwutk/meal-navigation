@@ -10,11 +10,11 @@ interface MenuOption {
 }
 
 const menuOptions: MenuOption[] = [
-  { id: 1, name: "Hamburger" },
-  { id: 2, name: "Pizza" },
-  { id: 3, name: "Salad" },
-  { id: 4, name: "Tacos" },
-  { id: 5, name: "Sushi" }
+  { id: 1, name: "Colcannon Potatoes" },
+  { id: 2, name: "Grilled Potato Wedges" },
+  { id: 3, name: "Japanese Cucumber Salad" },
+  { id: 4, name: "Fried Rice" },
+  { id: 5, name: "Egg Muffin Cups" }
 ];
 
 const daysOfWeek = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday","Saturday","Sunday"];
@@ -38,11 +38,11 @@ export default function MealSelection({}: MealSelectionProp) {
               {<p>You have selected: {selectedMeals[day]}</p>}
               <select value={selectedMeals[day]} onChange={(event) => handleMealSelection(event, day)}>
                 <option value="">Select a meal...</option>
-                <option value="hamburger">Hamburger</option>
-                <option value="pizza">Pizza</option>
-                <option value="salad">Salad</option>
-                <option value="tacos">Tacos</option>
-                <option value="sushi">Sushi</option>
+                <option value="Colcannon Potatoes">Colcannon Potatoes</option>
+                <option value="Grilled Potato Wedges">Grilled Potato Wedges</option>
+                <option value="Japanese Cucumber Salad">Japanese Cucumber Salad</option>
+                <option value="Fried Rice">Fried Rice</option>
+                <option value="Egg Muffin Cups">Egg Muffin Cups</option>
               </select>
             </React.Fragment>
           ))}
