@@ -1,4 +1,10 @@
-{
+export const data = {
+    "constraints": [
+        "Vegetarian",
+        "Cilantro",
+        "Lamb",
+        "Pork"
+    ],
     "ingredient": {
         "potato":{
             "unit":"pound",
@@ -1164,4 +1170,4 @@
             "time": "06:00-24:00"
             }]
     }  
-}
+} as const;

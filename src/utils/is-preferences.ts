@@ -2,7 +2,9 @@ import { Preferences } from "../types";
 
 export const types: {[k in keyof Preferences]: string} = {
   'Vegetarian': 'boolean',
-  'Lactose Intolerance': 'boolean',
+  'Cilantro': 'boolean',
+  'Pork': 'boolean',
+  'Lamb': 'boolean',
 } as const;
 
 export default function isPreferences(preferences: any): preferences is Preferences {

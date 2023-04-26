@@ -1,4 +1,6 @@
 export type Preferences = {
   'Vegetarian': boolean;
-  'Lactose Intolerance': boolean;
+  'Cilantro': boolean;
+  'Lamb': boolean;
+  'Pork': boolean;
 };

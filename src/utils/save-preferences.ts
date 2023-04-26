@@ -1,5 +1,5 @@
 import { Preferences } from '../types';
 
 export default function savePreferences(preferences: Preferences) {
-  localStorage.setItem('__meal_navigation__preferences', JSON.stringify(preferences));
+  localStorage.setItem('__meal_navigation__', JSON.stringify(preferences));
 }
