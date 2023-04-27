@@ -1,6 +1,68 @@
 export const data = {
   constraints: ['Vegetarian', 'Cilantro', 'Lamb', 'Pork'],
   ingredient: {
+    salt: {
+      unit: 'each',
+      addable: false,
+      product: [
+        {
+          name: 'Iodized Sea Salt',
+          brand: 'Hain Pure Foods',
+          original_price: 2.99,
+          discount_price: 2.99,
+          store: 'Whole Food',
+        },
+        {
+          name: 'Seasonings Sea Salt',
+          brand: 'Whole Food',
+          original_price: 5.49,
+          discount_price: 5.49,
+          store: 'Whole Food',
+        },
+        {
+          name: 'Smoked Salt',
+          brand: 'Oryx Salt',
+          original_price: 7.29,
+          discount_price: 7.29,
+          store: 'Whole Food',
+        },
+        {
+          name: 'Onion Salt',
+          brand: "Trader Joe's",
+          original_price: 1.99,
+          discount_price: 1.99,
+          store: "Trader Joe's",
+        },
+        {
+          name: 'Sea Salt Crystals',
+          brand: "Trader Joe's",
+          original_price: 1.99,
+          discount_price: 1.99,
+          store: "Trader Joe's",
+        },
+        {
+          name: 'Morton Salt Iodized',
+          brand: 'Morton',
+          original_price: 2.49,
+          discount_price: 2.49,
+          store: 'Safeway',
+        },
+        {
+          name: 'Signature SELECT Salt Iodized',
+          brand: 'Safeway',
+          original_price: 1.79,
+          discount_price: 1.79,
+          store: 'Safeway',
+        },
+        {
+          name: 'McCormick Sea Salt Grinder',
+          brand: 'McCormick',
+          original_price: 3.99,
+          discount_price: 3.99,
+          store: 'Safeway',
+        },
+      ],
+    },
     potato: {
       unit: 'pound',
       addable: true,
