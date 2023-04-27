@@ -15,3 +15,4 @@ npm run dev
 ```bash
 npm run build
 ```
+https://chanwutk.github.io/meal-navigation/
