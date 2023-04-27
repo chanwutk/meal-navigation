@@ -1,15 +1,15 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {data} from '../data/data';
-import {Card, ListGroup} from "react-bootstrap";
+import {Card, Form, ListGroup} from "react-bootstrap";
 
 interface IngredientSelectionProp {
   selectedMeals: {[key: string]: string};
   //Make it global
-  selectedBrands: {[key: string]: string};
-  setSelectedBrands: React.Dispatch<React.SetStateAction<{[key: string]: string}>>;
+  selectedBrands: string[];
+  setSelectedBrands: React.Dispatch<React.SetStateAction<string[]>>;
 };
 
-export default function IngredientSelection({ selectedMeals }: IngredientSelectionProp) {
+export default function IngredientSelection({ selectedMeals, selectedBrands, setSelectedBrands}: IngredientSelectionProp) {
   const daysOfWeek = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
   const mondayMeal = selectedMeals['Monday'];
   const tuesdayMeal = selectedMeals['Tuesday'];
@@ -24,7 +24,6 @@ export default function IngredientSelection({ selectedMeals }: IngredientSelecti
   let data_map = new Map<string, Array<Array<string>>>();
   //                    {ingredient: [[name0, brand0, original0 price0, discount price0, store0],
   //                                 [name1, brand1, original1 price1, discount price1, store1]]}
-
 
   for (const m of data["meal"]) {
     if(m.name == mondayMeal){
@@ -116,6 +115,7 @@ export default function IngredientSelection({ selectedMeals }: IngredientSelecti
 
   let ingr_arr = Array.from(ingr);
 
+  let id = 0;
   for (const i of ingr_arr){
     data_map.set(i,[]);
     // @ts-ignore
@@ -129,6 +129,8 @@ export default function IngredientSelection({ selectedMeals }: IngredientSelecti
       info.push(n.discount_price);
       info.push(n.store);
       info.push(unit);
+      info.push(id);
+      id = id + 1;
       if(info[1] == info[4]){
         info[1] = "Store Brand";
       }
@@ -150,7 +152,7 @@ export default function IngredientSelection({ selectedMeals }: IngredientSelecti
     {Array.from(data_map.entries()).map(([ingredient, items]) => (
       <Card
           key={ingredient}
-          style={{ width: '30rem' }}
+          style={{ width: '50rem' }}
           text = "white"
           className="mb-2"
           bg="dark"
@@ -158,10 +160,23 @@ export default function IngredientSelection({ selectedMeals }: IngredientSelecti
         <Card.Header>{ingredient}</Card.Header>
         <Card.Body>
           <ListGroup className="list-group-flush">
-            {items.map(([itemName, itemBrand, itemOPrice, itemDPrice, itemStore, unit]) => (
-                <ListGroup.Item key={itemName}>
-                  {itemBrand} | {itemStore} | ${itemDPrice} per {unit}
-                </ListGroup.Item>
+            {items.map(([itemName, itemBrand, itemOPrice, itemDPrice, itemStore, unit, id]) => (
+                // <ListGroup.Item key={id}>
+                //   {itemName} | {itemStore} | Original Price: ${itemOPrice} | Discount Price: ${itemDPrice} per {unit}
+                // </ListGroup.Item>
+                <Form.Check
+                    key={itemName}
+                    type="checkbox"
+                    label={`${itemName} | ${itemStore} | Original Price: ${itemOPrice} | Discount Price: ${itemDPrice} per ${unit}`}
+                    checked={selectedBrands.includes(id)}
+                    onChange={(e) => {
+                      if (e.target.checked) {
+                        setSelectedBrands([...selectedBrands, id]);
+                      } else {
+                        setSelectedBrands(selectedBrands.filter((item) => item !== id));
+                      }
+                    }}
+                />
             ))}
           </ListGroup>
         </Card.Body>
