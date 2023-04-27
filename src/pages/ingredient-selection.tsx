@@ -1,6 +1,6 @@
 import React from 'react';
-import { data } from '../data/data';
-import { useState } from "react";
+import {data} from '../data/data';
+import {Card, ListGroup} from "react-bootstrap";
 
 interface IngredientSelectionProp {
   selectedMeals: {[key: string]: string};
@@ -19,7 +19,11 @@ export default function IngredientSelection({ selectedMeals }: IngredientSelecti
   const saturdayMeal = selectedMeals['Saturday'];
   const sundayMeal = selectedMeals['Sunday'];
   let ingr = new Set<string>();
+  //Don't need to use ingr_count in this page, pass it to the next page!
   let ingr_count = new Map<string, number>();
+  let data_map = new Map<string, Array<Array<string>>>();
+  //                    {ingredient: [[name0, brand0, original0 price0, discount price0, store0],
+  //                                 [name1, brand1, original1 price1, discount price1, store1]]}
 
 
   for (const m of data["meal"]) {
@@ -109,13 +113,60 @@ export default function IngredientSelection({ selectedMeals }: IngredientSelecti
     }
   }
 
+
+  let ingr_arr = Array.from(ingr);
+
+  for (const i of ingr_arr){
+    data_map.set(i,[]);
+    // @ts-ignore
+    let unit = data["ingredient"][i]["unit"];
+    // @ts-ignore
+    for(const n of data["ingredient"][i]["product"]){
+      let info = [];
+      info.push(n.name);
+      info.push(n.brand);
+      info.push(n.original_price);
+      info.push(n.discount_price);
+      info.push(n.store);
+      info.push(unit);
+      if(info[1] == info[4]){
+        info[1] = "Store Brand";
+      }
+      // @ts-ignore
+      data_map.get(i).push(info);
+    }
+    console.log(data_map);
+  }
+
   return <>
-    <div>
-      <h2>Selected meals:</h2>
-      <ul>
-        <li>Ingredient: {Array.from(ingr).join(", ")}</li>
-      </ul>
-    </div>
+    {/*<div>*/}
+    {/*  <h2>Selected meals:</h2>*/}
+    {/*  <ul>*/}
+    {/*    <li>Ingredient: {ingr_arr.join(", ")}</li>*/}
+    {/*  </ul>*/}
+    {/*</div>*/}
+
+
+    {Array.from(data_map.entries()).map(([ingredient, items]) => (
+      <Card
+          key={ingredient}
+          style={{ width: '30rem' }}
+          text = "white"
+          className="mb-2"
+          bg="dark"
+      >
+        <Card.Header>{ingredient}</Card.Header>
+        <Card.Body>
+          <ListGroup className="list-group-flush">
+            {items.map(([itemName, itemBrand, itemOPrice, itemDPrice, itemStore, unit]) => (
+                <ListGroup.Item key={itemName}>
+                  {itemBrand} | {itemStore} | ${itemDPrice} per {unit}
+                </ListGroup.Item>
+            ))}
+          </ListGroup>
+        </Card.Body>
+      </Card>
+  ))}
     <button hidden={true}>Next</button>
   </>;
 }
