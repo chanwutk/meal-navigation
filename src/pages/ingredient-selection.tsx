@@ -167,7 +167,7 @@ export default function IngredientSelection({ selectedMeals, selectedBrands, set
                 <Form.Check
                     key={itemName}
                     type="checkbox"
-                    label={`${itemName} | ${itemStore} | Original Price: ${itemOPrice} | Discount Price: ${itemDPrice} per ${unit}`}
+                    label={`${itemName} | ${itemStore} | Original Price: $${itemOPrice} | Discount Price: $${itemDPrice} per ${unit}`}
                     checked={selectedBrands.includes(id)}
                     onChange={(e) => {
                       if (e.target.checked) {
