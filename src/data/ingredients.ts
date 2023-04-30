@@ -9,7 +9,7 @@ export const ingredient: {
       discount_price: number;
       store: string;
     }[];
-  }
+  };
 } = {
   salt: {
     unit: 'each',
@@ -1008,4 +1008,4 @@ export const ingredient: {
       },
     ],
   },
-}
+};

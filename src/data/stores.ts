@@ -3,7 +3,7 @@ export const store: {
     address: string;
     phone: string;
     time: string;
-    location: [number, number]
+    location: [number, number];
   }[];
 } = {
   'Whole Food': [
@@ -107,5 +107,5 @@ export const store: {
     // "phone": "(510) 465-4187",
     // "time": "06:00-24:00"
     // }
-  ]
-}
+  ],
+};

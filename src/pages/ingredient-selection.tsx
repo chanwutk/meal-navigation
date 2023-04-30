@@ -1,16 +1,28 @@
-import React, {useState} from 'react';
-import {data} from '../data/data';
-import {Card, Form, ListGroup} from "react-bootstrap";
+import React, { useState } from 'react';
+import { data } from '../data/data';
+import { Card, Form, ListGroup } from 'react-bootstrap';
 
 interface IngredientSelectionProp {
-  selectedMeals: {[key: string]: string};
+  selectedMeals: { [key: string]: string };
   //Make it global
   selectedBrands: string[];
   setSelectedBrands: React.Dispatch<React.SetStateAction<string[]>>;
-};
+}
 
-export default function IngredientSelection({ selectedMeals, selectedBrands, setSelectedBrands}: IngredientSelectionProp) {
-  const daysOfWeek = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
+export default function IngredientSelection({
+  selectedMeals,
+  selectedBrands,
+  setSelectedBrands,
+}: IngredientSelectionProp) {
+  const daysOfWeek = [
+    'Monday',
+    'Tuesday',
+    'Wednesday',
+    'Thursday',
+    'Friday',
+    'Saturday',
+    'Sunday',
+  ];
   const mondayMeal = selectedMeals['Monday'];
   const tuesdayMeal = selectedMeals['Tuesday'];
   const wednesdayMeal = selectedMeals['Wednesday'];
@@ -25,103 +37,95 @@ export default function IngredientSelection({ selectedMeals, selectedBrands, set
   //                    {ingredient: [[name0, brand0, original0 price0, discount price0, store0],
   //                                 [name1, brand1, original1 price1, discount price1, store1]]}
 
-  for (const m of data["meal"]) {
-    if(m.name == mondayMeal){
-      for (const r of m.recipe){
+  for (const m of data['meal']) {
+    if (m.name == mondayMeal) {
+      for (const r of m.recipe) {
         ingr.add(r.category);
-        if(!ingr_count.has(r.category)){
+        if (!ingr_count.has(r.category)) {
           ingr_count.set(r.category, 1);
-        }
-        else{
+        } else {
           // @ts-ignore
-          ingr_count.set(r.category, ingr_count.get(r.category)+1);
+          ingr_count.set(r.category, ingr_count.get(r.category) + 1);
         }
       }
     }
-    if(m.name == tuesdayMeal){
-      for (const r of m.recipe){
+    if (m.name == tuesdayMeal) {
+      for (const r of m.recipe) {
         ingr.add(r.category);
-        if(!ingr_count.has(r.category)){
+        if (!ingr_count.has(r.category)) {
           ingr_count.set(r.category, 1);
-        }
-        else{
+        } else {
           // @ts-ignore
-          ingr_count.set(r.category, ingr_count.get(r.category)+1);
+          ingr_count.set(r.category, ingr_count.get(r.category) + 1);
         }
       }
     }
-    if(m.name == wednesdayMeal){
-      for (const r of m.recipe){
+    if (m.name == wednesdayMeal) {
+      for (const r of m.recipe) {
         ingr.add(r.category);
-        if(!ingr_count.has(r.category)){
+        if (!ingr_count.has(r.category)) {
           ingr_count.set(r.category, 1);
-        }
-        else{
+        } else {
           // @ts-ignore
-          ingr_count.set(r.category, ingr_count.get(r.category)+1);
+          ingr_count.set(r.category, ingr_count.get(r.category) + 1);
         }
       }
     }
-    if(m.name == thursdayMeal){
-      for (const r of m.recipe){
+    if (m.name == thursdayMeal) {
+      for (const r of m.recipe) {
         ingr.add(r.category);
-        if(!ingr_count.has(r.category)){
+        if (!ingr_count.has(r.category)) {
           ingr_count.set(r.category, 1);
-        }
-        else{
+        } else {
           // @ts-ignore
-          ingr_count.set(r.category, ingr_count.get(r.category)+1);
+          ingr_count.set(r.category, ingr_count.get(r.category) + 1);
         }
       }
     }
-    if(m.name == fridayMeal){
-      for (const r of m.recipe){
+    if (m.name == fridayMeal) {
+      for (const r of m.recipe) {
         ingr.add(r.category);
-        if(!ingr_count.has(r.category)){
+        if (!ingr_count.has(r.category)) {
           ingr_count.set(r.category, 1);
-        }
-        else{
+        } else {
           // @ts-ignore
-          ingr_count.set(r.category, ingr_count.get(r.category)+1);
+          ingr_count.set(r.category, ingr_count.get(r.category) + 1);
         }
       }
     }
-    if(m.name == saturdayMeal){
-      for (const r of m.recipe){
+    if (m.name == saturdayMeal) {
+      for (const r of m.recipe) {
         ingr.add(r.category);
-        if(!ingr_count.has(r.category)){
+        if (!ingr_count.has(r.category)) {
           ingr_count.set(r.category, 1);
-        }
-        else{
+        } else {
           // @ts-ignore
-          ingr_count.set(r.category, ingr_count.get(r.category)+1);
+          ingr_count.set(r.category, ingr_count.get(r.category) + 1);
         }
       }
     }
-    if(m.name == sundayMeal){
-      for (const r of m.recipe){
+    if (m.name == sundayMeal) {
+      for (const r of m.recipe) {
         ingr.add(r.category);
-        if(!ingr_count.has(r.category)){
+        if (!ingr_count.has(r.category)) {
           ingr_count.set(r.category, 1);
-        }
-        else{
+        } else {
           // @ts-ignore
-          ingr_count.set(r.category, ingr_count.get(r.category)+1);
+          ingr_count.set(r.category, ingr_count.get(r.category) + 1);
         }
       }
     }
   }
 
-
   let ingr_arr = Array.from(ingr);
 
   let id = 0;
-  for (const i of ingr_arr){
-    data_map.set(i,[]);
+  for (const i of ingr_arr) {
+    data_map.set(i, []);
     // @ts-ignore
-    let unit = data["ingredient"][i]["unit"];
+    let unit = data['ingredient'][i]['unit'];
     // @ts-ignore
-    for(const n of data["ingredient"][i]["product"]){
+    for (const n of data['ingredient'][i]['product']) {
       let info = [];
       info.push(n.name);
       info.push(n.brand);
@@ -131,8 +135,8 @@ export default function IngredientSelection({ selectedMeals, selectedBrands, set
       info.push(unit);
       info.push(id);
       id = id + 1;
-      if(info[1] == info[4]){
-        info[1] = "Store Brand";
+      if (info[1] == info[4]) {
+        info[1] = 'Store Brand';
       }
       // @ts-ignore
       data_map.get(i).push(info);
@@ -140,31 +144,40 @@ export default function IngredientSelection({ selectedMeals, selectedBrands, set
     console.log(data_map);
   }
 
-  return <>
-    {/*<div>*/}
-    {/*  <h2>Selected meals:</h2>*/}
-    {/*  <ul>*/}
-    {/*    <li>Ingredient: {ingr_arr.join(", ")}</li>*/}
-    {/*  </ul>*/}
-    {/*</div>*/}
+  return (
+    <>
+      {/*<div>*/}
+      {/*  <h2>Selected meals:</h2>*/}
+      {/*  <ul>*/}
+      {/*    <li>Ingredient: {ingr_arr.join(", ")}</li>*/}
+      {/*  </ul>*/}
+      {/*</div>*/}
 
-
-    {Array.from(data_map.entries()).map(([ingredient, items]) => (
-      <Card
+      {Array.from(data_map.entries()).map(([ingredient, items]) => (
+        <Card
           key={ingredient}
           style={{ width: '50rem' }}
-          text = "white"
+          text="white"
           className="mb-2"
           bg="dark"
-      >
-        <Card.Header>{ingredient}</Card.Header>
-        <Card.Body>
-          <ListGroup className="list-group-flush">
-            {items.map(([itemName, itemBrand, itemOPrice, itemDPrice, itemStore, unit, id]) => (
-                // <ListGroup.Item key={id}>
-                //   {itemName} | {itemStore} | Original Price: ${itemOPrice} | Discount Price: ${itemDPrice} per {unit}
-                // </ListGroup.Item>
-                <Form.Check
+        >
+          <Card.Header>{ingredient}</Card.Header>
+          <Card.Body>
+            <ListGroup className="list-group-flush">
+              {items.map(
+                ([
+                  itemName,
+                  itemBrand,
+                  itemOPrice,
+                  itemDPrice,
+                  itemStore,
+                  unit,
+                  id,
+                ]) => (
+                  // <ListGroup.Item key={id}>
+                  //   {itemName} | {itemStore} | Original Price: ${itemOPrice} | Discount Price: ${itemDPrice} per {unit}
+                  // </ListGroup.Item>
+                  <Form.Check
                     key={itemName}
                     type="checkbox"
                     label={`${itemName} | ${itemStore} | Original Price: $${itemOPrice} | Discount Price: $${itemDPrice} per ${unit}`}
@@ -173,15 +186,19 @@ export default function IngredientSelection({ selectedMeals, selectedBrands, set
                       if (e.target.checked) {
                         setSelectedBrands([...selectedBrands, id]);
                       } else {
-                        setSelectedBrands(selectedBrands.filter((item) => item !== id));
+                        setSelectedBrands(
+                          selectedBrands.filter((item) => item !== id),
+                        );
                       }
                     }}
-                />
-            ))}
-          </ListGroup>
-        </Card.Body>
-      </Card>
-  ))}
-    <button hidden={true}>Next</button>
-  </>;
+                  />
+                ),
+              )}
+            </ListGroup>
+          </Card.Body>
+        </Card>
+      ))}
+      <button hidden={true}>Next</button>
+    </>
+  );
 }
