@@ -156,6 +156,7 @@ export default function App() {
         </div>
         <div style={activateStyle('meal-sel')}>
           <MealSelection
+            preferences={preferences}
             selectedMeals={selectedMeals}
             setSelectedMeals={setSelectedMeals}
           />

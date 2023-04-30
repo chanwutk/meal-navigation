@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { meals } from '../data/meals';
-import {ingredient} from '../data/ingredients';
+import { ingredient } from '../data/ingredients';
 import { Card, Form, ListGroup } from 'react-bootstrap';
 
 interface IngredientSelectionProp {
@@ -160,9 +160,7 @@ export default function IngredientSelection({
   let id = 0;
   for (const i of ingr_arr) {
     data_map.set(i, []);
-    // @ts-ignore
     let unit = ingredient[i]['unit'];
-    // @ts-ignore
     for (const n of ingredient[i]['product']) {
       let info = [];
       info.push(n.name);

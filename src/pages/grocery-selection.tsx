@@ -204,20 +204,20 @@ export default function GrocerySelection({ show }: GrocerySelectionProp) {
         });
       });
     });
-    stores['Whole Food'].forEach((wf) => {
-      stores["Trader Joe's"].forEach((tj) => {
-        stores['Safeway'].forEach((sw) => {
-          const places = [wf, tj, sw];
-          places.forEach((p1) => {
-            places.forEach((p2) => {
-              fetch(
-                'https://api.openrouteservice.org/v2/directions/driving-car',
-              );
-            });
-          });
-        });
-      });
-    });
+    // stores['Whole Food'].forEach((wf) => {
+    //   stores["Trader Joe's"].forEach((tj) => {
+    //     stores['Safeway'].forEach((sw) => {
+    //       const places = [wf, tj, sw];
+    //       places.forEach((p1) => {
+    //         places.forEach((p2) => {
+    //           fetch(
+    //             'https://api.openrouteservice.org/v2/directions/driving-car',
+    //           );
+    //         });
+    //       });
+    //     });
+    //   });
+    // });
 
     // try {
     //   if (Object.keys(directions).length > 0) {
@@ -255,7 +255,7 @@ export default function GrocerySelection({ show }: GrocerySelectionProp) {
         >
           {plans.map((plan, idx) => (
             <ToggleButton
-              key={idx}
+              key={`plan-${idx}`}
               id={`plan-${idx}`}
               type="radio"
               variant="outline-dark"
@@ -269,12 +269,13 @@ export default function GrocerySelection({ show }: GrocerySelectionProp) {
                 selectedPlan === plan.stores.map((s) => s.address).join('_')
                   ? {}
                   : { backgroundColor: 'white' }
-              }
-            >
+              }>
+            <>
               <div className="d-flex flex-row justify-content-center align-items-center">
                 {plan.stores
-                  .map((s) => (
+                  .map((s, i) => (
                     <Image
+                      key={`${i}-${s.brand}`}
                       className="m-1"
                       width={30}
                       height={30}
@@ -310,6 +311,7 @@ export default function GrocerySelection({ show }: GrocerySelectionProp) {
                 </div>
               </div>
               {/* {JSON.stringify(plan)} */}
+            </>
             </ToggleButton>
           ))}
         </div>

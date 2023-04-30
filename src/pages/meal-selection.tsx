@@ -4,8 +4,12 @@ import IngredientSelection from './ingredient-selection';
 import { Preferences } from '../types';
 import UserPreferences from './user-preferences';
 import { meals } from '../data/meals';
+import parsePreferences from '../utils/parse-preferences';
+import validatePreferences from '../utils/validate-preferences';
+import parseConstraints from '../utils/parse-constraints';
 
 interface MealSelectionProp {
+  preferences: Preferences;
   selectedMeals: { [key: string]: string };
   setSelectedMeals: React.Dispatch<
     React.SetStateAction<{ [key: string]: string }>
@@ -49,9 +53,11 @@ const menuOptions: MenuOption[] = [
 ];
 
 export default function MealSelection({
+  preferences,
   selectedMeals,
   setSelectedMeals,
 }: MealSelectionProp) {
+  const parsedPreferences = parsePreferences(preferences);
   const daysOfWeek = [
     'Monday',
     'Tuesday',
@@ -98,11 +104,20 @@ export default function MealSelection({
                   onChange={(event) => handleMealSelection(event, day)}
                 >
                   <option value="">Select a meal...</option>
-                  {randomLists[index].map((food) => (
-                    <option key={`${food}-${day}`} value={`${food}-${day}`}>
-                      {food}
-                    </option>
-                  ))}
+                  {randomLists[index]
+                    .filter((f) =>
+                      validatePreferences(
+                        preferences,
+                        parseConstraints(
+                          meals.find((m) => m.name === f)?.constraints,
+                        ),
+                      ),
+                    )
+                    .map((food) => (
+                      <option key={`${food}-${day}`} value={`${food}`}>
+                        {food}
+                      </option>
+                    ))}
                 </select>
               </div>
             </div>
