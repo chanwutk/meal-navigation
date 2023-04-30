@@ -1,7 +1,9 @@
 import {Preferences} from '../types';
 import PreferenceEntry from '../components/preference-entry';
-import { useEffect } from 'react';
 
+import React from 'react';
+import MealSelection from './meal-selection';
+// import { selectedMeals } from './meal-selection';
 interface UserPreferencesProp {
   preferences: Preferences;
   setPreferences: (p: Preferences) => void;
@@ -29,5 +31,11 @@ export default function UserPreferences({preferences, setPreferences}: UserPrefe
     {Object.keys({
       ...preferences,
     }).map(makeEntry)}
+  {/* <MealSelection
+      selectedMeals={selectedMeals}
+      setSelectedMeals={setSelectedMeals}
+      preferences={preferences}
+      setPreferences={setPreferences}
+    /> */}
   </>;
 }
