@@ -127,7 +127,14 @@ export default function App() {
         <GrocerySelection
           show={activeTab === 'groc-sel'}
           meals={[]}
-          plans={['plan1', 'plan2']}
+          plans={[
+            'plan1', 'plan2',
+            'plan1', 'plan2',
+            'plan1', 'plan2',
+            'plan1', 'plan2',
+            'plan1', 'plan2',
+            'plan1', 'plan2',
+          ]}
         />
       </div>
 

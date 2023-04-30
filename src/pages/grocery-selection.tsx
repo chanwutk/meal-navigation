@@ -8,18 +8,24 @@ import {
   Polyline,
 } from 'react-leaflet';
 import { useEffect, useState } from 'react';
-import markerIconPng from 'leaflet/dist/images/marker-icon.png';
 
-import { data } from '../data/data';
+import { stores } from '../data/stores';
 import { paths } from '../data/paths';
 
 import 'leaflet/dist/leaflet.css';
-import { ButtonGroup, ToggleButton } from 'react-bootstrap';
+import { ToggleButton, Image } from 'react-bootstrap';
+import { Store } from '../types';
+import { faCaretRight } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 const CURRENT_LOCATION: LatLngTuple = [37.87607, -122.258502];
 
 interface Plan {
-  groceries: string[];
+  stores: Store[];
+  travelCost: number;
+  groceryCost: number;
+  travelTime: number;
+  travelDistance: number;
 }
 
 interface GrocerySelectionProp {
@@ -58,13 +64,128 @@ function MapOps({ show }: MapOpsProp) {
   return null;
 }
 
-export default function GrocerySelection({
-  show,
-  plans,
-}: GrocerySelectionProp) {
+export default function GrocerySelection({show}: GrocerySelectionProp) {
   // const [directions, setDirections] = useState<{[k: string]: Path}>({});
   const [activeMarker, setActiveMarker] = useState<string>('');
   const [selectedPlan, setSelectedPlan] = useState<string>('');
+  const [plans, setPlans] = useState<Plan[]>([
+    {
+      stores: [
+        {
+          brand: 'Whole Food',
+          address: '5110 Telegraph Ave, Oakland, CA 94609',
+          phone: '(510) 903-2222',
+          time: '08:00-21:00',
+          location: [37.837657, -122.262078],
+        },
+        {
+          brand: "Trader Joe's",
+          address: '5700 Christie Ave, Emeryville, CA 94608',
+          phone: '(510) 658-8091',
+          time: '08:00-21:00',
+          location: [37.837047, -122.293903],
+        },
+        {
+          brand: 'Safeway',
+          address: '6310 College Ave, Oakland, CA 94618',
+          phone: '(510) 985-0012',
+          time: '05:00-24:00',
+          location: [37.85073, -122.252364],
+        },
+      ],
+      travelCost: 3,
+      travelTime: 15,
+      travelDistance: 3,
+      groceryCost: 30,
+    },
+    {
+      travelCost: 2,
+      travelTime: 20,
+      travelDistance: 3,
+      groceryCost: 60,
+      stores: [
+        {
+          brand: "Trader Joe's",
+          address: '5727 College Ave, Oakland, CA 94618',
+          phone: '(510) 923-9428',
+          time: '08:00-21:00',
+          location: [37.845923, -122.252565],
+        },
+        {
+          brand: 'Whole Food',
+          address: '1025 Gilman St, Berkeley, CA 94710',
+          phone: '(510) 809-8293',
+          time: '08:00-22:00',
+          location: [37.880569, -122.297177],
+        },
+        {
+          brand: 'Safeway',
+          address: '1550 Shattuck Ave., Berkeley, CA 94709',
+          phone: '(510) 841-7942',
+          time: '06:00-23:00',
+          location: [37.878793, -122.269677],
+        },
+      ]
+    },
+    {
+      travelCost: 1,
+      travelTime: 2,
+      travelDistance: 1,
+      groceryCost: 30,
+      stores: [
+        {
+          brand: 'Safeway',
+          address: '1444 Shattuck Place, Berkeley, CA 94709',
+          phone: '(510) 526-3086',
+          time: '05:00-24:00',
+          location: [37.880819, -122.269725],
+        },
+        {
+          brand: "Trader Joe's",
+          address: '5727 College Ave, Oakland, CA 94618',
+          phone: '(510) 923-9428',
+          time: '08:00-21:00',
+          location: [37.845923, -122.252565],
+        },
+        {
+          brand: 'Whole Food',
+          address: '1025 Gilman St, Berkeley, CA 94710',
+          phone: '(510) 809-8293',
+          time: '08:00-22:00',
+          location: [37.880569, -122.297177],
+        }, 
+      ]
+    },
+    {
+      travelCost: 1,
+      travelTime: 2,
+      travelDistance: 1,
+      groceryCost: 30,
+      stores: [
+        {
+          brand: 'Safeway',
+          address: '1444 Shattuck Place, Berkeley, CA 94709',
+          phone: '(510) 526-3086',
+          time: '05:00-24:00',
+          location: [37.880819, -122.269725],
+        },
+        {
+          brand: "Trader Joe's",
+          address: '5727 College Ave, Oakland, CA 94618',
+          phone: '(510) 923-9428',
+          time: '08:00-21:00',
+          location: [37.845923, -122.252565],
+        },
+        {
+          brand: 'Whole Food',
+          address: '1025 Gilman St, Berkeley, CA 94710',
+          phone: '(510) 809-8293',
+          time: '08:00-22:00',
+          location: [37.880569, -122.297177],
+        }, 
+      ]
+    }
+  ])
 
   useEffect(() => {
     const _stores: {
@@ -73,7 +194,7 @@ export default function GrocerySelection({
       location: [number, number];
     }[] = [];
 
-    Object.entries(data.store).map(([name, stores]) => {
+    Object.entries(stores).map(([name, stores]) => {
       stores.map((s) => {
         const [lat, lon] = s.location;
         _stores.push({
@@ -113,20 +234,43 @@ export default function GrocerySelection({
 
   return (
     <>
-      <div className="p-1">
+      <div className="p-1 plan-panel" style={{overflow: 'scroll', whiteSpace: 'nowrap'}}>
         {plans.map((plan, idx) => (
           <ToggleButton
             key={idx}
             id={`plan-${idx}`}
             type="radio"
             variant="outline-dark"
-            value={plan}
-            checked={selectedPlan === plan}
+            value={plan.stores.map(s => s.address).join('_')}
+            checked={selectedPlan === plan.stores.map(s => s.address).join('_')}
             onChange={(e) => setSelectedPlan(e.currentTarget.value)}
             className="m-2"
-            style={selectedPlan === plan ? {} : { backgroundColor: 'white' }}
+            style={selectedPlan === plan.stores.map(s => s.address).join('_') ? {} : { backgroundColor: 'white' }}
           >
-            {plan}
+            <div className='d-flex flex-row justify-content-center align-items-center'>
+              {
+                plan.stores
+                  .map(s => <Image className='m-1' width={30} height={30} src={ICONS[s.brand]}></Image>)
+                  .map((c, i) => {
+                    return <>
+                      {c}
+                      {
+                        i < plan.stores.length - 1
+                        ? <div><FontAwesomeIcon icon={faCaretRight} size="2xs" /></div>
+                        : <></>
+                      }
+                    </>;
+                  })
+              }
+            </div>
+            <div className='d-flex flex-row justify-content-between align-items-center'>
+              <div style={{fontWeight: 'bolder', fontSize: 40}}>${plan.travelCost + plan.groceryCost}</div>
+              <div className='d-flex flex-column align-items-start m-2'>
+                <div style={{lineHeight: '100%'}}>{plan.travelDistance} mi.</div>
+                <div style={{lineHeight: '100%'}}>{plan.travelTime} min.</div>
+              </div>
+            </div>
+            {/* {JSON.stringify(plan)} */}
           </ToggleButton>
         ))}
       </div>

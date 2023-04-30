@@ -35,3 +35,12 @@
   top: 0;
   z-index: -1;
 }
+
+.plan-panel {
+  -ms-overflow-style: none; /* for Internet Explorer, Edge */
+  scrollbar-width: none; /* for Firefox */
+}
+
+.plan-panel::-webkit-scrollbar {
+    display: none; /* for Chrome, Safari, and Opera */
+}

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { data } from '../data/data';
+import { meals } from '../data/meals';
 import { Card, Form, ListGroup } from 'react-bootstrap';
 
 interface IngredientSelectionProp {
@@ -37,7 +37,7 @@ export default function IngredientSelection({
   //                    {ingredient: [[name0, brand0, original0 price0, discount price0, store0],
   //                                 [name1, brand1, original1 price1, discount price1, store1]]}
 
-  for (const m of data['meal']) {
+  for (const m of meals) {
     if (m.name == mondayMeal) {
       for (const r of m.recipe) {
         ingr.add(r.category);
