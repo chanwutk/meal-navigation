@@ -1,10 +1,10 @@
 import { Preferences } from '../types';
 import isPreferences from './is-preferences';
-import { data } from '../data/data';
+import { constraints } from '../data/constraints';
 
 export const defaultPreferences: Preferences = Object.assign(
   {},
-  ...data.constraints.map((d) => ({ [d]: false })),
+  ...constraints.map((d) => ({ [d]: false })),
 );
 
 export default function loadPreferences() {

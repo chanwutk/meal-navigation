@@ -3,7 +3,7 @@ import { useState } from "react";
 import IngredientSelection from './ingredient-selection';
 import {Preferences} from '../types';
 import UserPreferences from './user-preferences'
-import {data} from '../data/data';
+import {meals} from '../data/meals';
 
 
 interface MealSelectionProp {
@@ -29,7 +29,7 @@ function getRandomItems(items: string[], count: number): string[] {
 }
 
 const allfoods: string[] = [];
-for (const meal of data.meal) {
+for (const meal of meals) {
   allfoods.push(meal.name);
 }
 

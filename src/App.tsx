@@ -82,7 +82,7 @@ export default function App() {
                 <Nav.Link style={activeTab === 'user-pref' ? {} : {display: 'none'}} eventKey='user-pref'>User Preferences</Nav.Link>
                 <Nav.Link style={activeTab === 'meal-sel' ? {} : {display: 'none'}} eventKey='meal-sel'>Meal Selection</Nav.Link>
                 <Nav.Link style={activeTab === 'ingr-sel' ? {} : {display: 'none'}} eventKey='ingr-sel'>Ingredient Selection</Nav.Link>
-                <Nav.Link style={activeTab === 'groc-sel' ? {} : {display: 'none'}} eventKey='groc-sel'>Grocery Selection</Nav.Link>
+                <Nav.Link style={activeTab === 'groc-sel' ? {} : {display: 'none'}} eventKey='groc-sel'>Plan Selection</Nav.Link>
               </Nav>
           </Navbar.Collapse>
         </Container>
@@ -91,6 +91,7 @@ export default function App() {
       <div style={activateStyle('groc-sel')}><GrocerySelection
         show={activeTab === 'groc-sel'}
         meals={[]}
+        plans={['plan1', 'plan2']}
       /></div>
 
       <Container>
