@@ -1,4 +1,4 @@
-import {Store} from '../types';
+import { Store } from '../types';
 
 export const stores: {
   [name: string]: Store[];

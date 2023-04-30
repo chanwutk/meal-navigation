@@ -128,12 +128,18 @@ export default function App() {
           show={activeTab === 'groc-sel'}
           meals={[]}
           plans={[
-            'plan1', 'plan2',
-            'plan1', 'plan2',
-            'plan1', 'plan2',
-            'plan1', 'plan2',
-            'plan1', 'plan2',
-            'plan1', 'plan2',
+            'plan1',
+            'plan2',
+            'plan1',
+            'plan2',
+            'plan1',
+            'plan2',
+            'plan1',
+            'plan2',
+            'plan1',
+            'plan2',
+            'plan1',
+            'plan2',
           ]}
         />
       </div>

@@ -13,7 +13,7 @@ import { stores } from '../data/stores';
 import { paths } from '../data/paths';
 
 import 'leaflet/dist/leaflet.css';
-import { ToggleButton, Image } from 'react-bootstrap';
+import { ToggleButton, Image, Container } from 'react-bootstrap';
 import { Store } from '../types';
 import { faCaretRight } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -64,7 +64,7 @@ function MapOps({ show }: MapOpsProp) {
   return null;
 }
 
-export default function GrocerySelection({show}: GrocerySelectionProp) {
+export default function GrocerySelection({ show }: GrocerySelectionProp) {
   // const [directions, setDirections] = useState<{[k: string]: Path}>({});
   const [activeMarker, setActiveMarker] = useState<string>('');
   const [selectedPlan, setSelectedPlan] = useState<string>('');
@@ -125,7 +125,7 @@ export default function GrocerySelection({show}: GrocerySelectionProp) {
           time: '06:00-23:00',
           location: [37.878793, -122.269677],
         },
-      ]
+      ],
     },
     {
       travelCost: 1,
@@ -153,8 +153,8 @@ export default function GrocerySelection({show}: GrocerySelectionProp) {
           phone: '(510) 809-8293',
           time: '08:00-22:00',
           location: [37.880569, -122.297177],
-        }, 
-      ]
+        },
+      ],
     },
     {
       travelCost: 1,
@@ -182,10 +182,10 @@ export default function GrocerySelection({show}: GrocerySelectionProp) {
           phone: '(510) 809-8293',
           time: '08:00-22:00',
           location: [37.880569, -122.297177],
-        }, 
-      ]
-    }
-  ])
+        },
+      ],
+    },
+  ]);
 
   useEffect(() => {
     const _stores: {
@@ -201,6 +201,20 @@ export default function GrocerySelection({show}: GrocerySelectionProp) {
           name,
           address: s.address,
           location: [lat, lon],
+        });
+      });
+    });
+    stores['Whole Food'].forEach((wf) => {
+      stores["Trader Joe's"].forEach((tj) => {
+        stores['Safeway'].forEach((sw) => {
+          const places = [wf, tj, sw];
+          places.forEach((p1) => {
+            places.forEach((p2) => {
+              fetch(
+                'https://api.openrouteservice.org/v2/directions/driving-car',
+              );
+            });
+          });
         });
       });
     });
@@ -234,46 +248,72 @@ export default function GrocerySelection({show}: GrocerySelectionProp) {
 
   return (
     <>
-      <div className="p-1 plan-panel" style={{overflow: 'scroll', whiteSpace: 'nowrap'}}>
-        {plans.map((plan, idx) => (
-          <ToggleButton
-            key={idx}
-            id={`plan-${idx}`}
-            type="radio"
-            variant="outline-dark"
-            value={plan.stores.map(s => s.address).join('_')}
-            checked={selectedPlan === plan.stores.map(s => s.address).join('_')}
-            onChange={(e) => setSelectedPlan(e.currentTarget.value)}
-            className="m-2"
-            style={selectedPlan === plan.stores.map(s => s.address).join('_') ? {} : { backgroundColor: 'white' }}
-          >
-            <div className='d-flex flex-row justify-content-center align-items-center'>
-              {
-                plan.stores
-                  .map(s => <Image className='m-1' width={30} height={30} src={ICONS[s.brand]}></Image>)
-                  .map((c, i) => {
-                    return <>
-                      {c}
-                      {
-                        i < plan.stores.length - 1
-                        ? <div><FontAwesomeIcon icon={faCaretRight} size="2xs" /></div>
-                        : <></>
-                      }
-                    </>;
-                  })
+      <Container>
+        <div
+          className="p-1 plan-panel"
+          style={{ overflow: 'scroll', whiteSpace: 'nowrap' }}
+        >
+          {plans.map((plan, idx) => (
+            <ToggleButton
+              key={idx}
+              id={`plan-${idx}`}
+              type="radio"
+              variant="outline-dark"
+              value={plan.stores.map((s) => s.address).join('_')}
+              checked={
+                selectedPlan === plan.stores.map((s) => s.address).join('_')
               }
-            </div>
-            <div className='d-flex flex-row justify-content-between align-items-center'>
-              <div style={{fontWeight: 'bolder', fontSize: 40}}>${plan.travelCost + plan.groceryCost}</div>
-              <div className='d-flex flex-column align-items-start m-2'>
-                <div style={{lineHeight: '100%'}}>{plan.travelDistance} mi.</div>
-                <div style={{lineHeight: '100%'}}>{plan.travelTime} min.</div>
+              onChange={(e) => setSelectedPlan(e.currentTarget.value)}
+              className="m-2"
+              style={
+                selectedPlan === plan.stores.map((s) => s.address).join('_')
+                  ? {}
+                  : { backgroundColor: 'white' }
+              }
+            >
+              <div className="d-flex flex-row justify-content-center align-items-center">
+                {plan.stores
+                  .map((s) => (
+                    <Image
+                      className="m-1"
+                      width={30}
+                      height={30}
+                      src={ICONS[s.brand]}
+                    ></Image>
+                  ))
+                  .map((c, i) => {
+                    return (
+                      <>
+                        {c}
+                        {i < plan.stores.length - 1 ? (
+                          <div>
+                            <FontAwesomeIcon icon={faCaretRight} size="2xs" />
+                          </div>
+                        ) : (
+                          <></>
+                        )}
+                      </>
+                    );
+                  })}
               </div>
-            </div>
-            {/* {JSON.stringify(plan)} */}
-          </ToggleButton>
-        ))}
-      </div>
+              <div className="d-flex flex-row justify-content-between align-items-center">
+                <div style={{ fontWeight: 'bolder', fontSize: 40 }}>
+                  ${plan.travelCost + plan.groceryCost}
+                </div>
+                <div className="d-flex flex-column align-items-start m-2">
+                  <div style={{ lineHeight: '100%' }}>
+                    {plan.travelDistance} mi.
+                  </div>
+                  <div style={{ lineHeight: '100%' }}>
+                    {plan.travelTime} min.
+                  </div>
+                </div>
+              </div>
+              {/* {JSON.stringify(plan)} */}
+            </ToggleButton>
+          ))}
+        </div>
+      </Container>
       <MapContainer
         center={CURRENT_LOCATION}
         zoom={16}
