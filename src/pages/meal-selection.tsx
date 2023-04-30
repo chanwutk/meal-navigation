@@ -101,19 +101,19 @@ export default function MealSelection({
                 <select
                   style={{ display: 'inline-block' }}
                   value={selectedMeals[day]}
-                  onChange={(event) => handleMealSelection(event, day)}
+                  onChange={event => handleMealSelection(event, day)}
                 >
-                  <option value="">Select a meal...</option>
+                  <option value=''>Select a meal...</option>
                   {randomLists[index]
-                    .filter((f) =>
+                    .filter(f =>
                       validatePreferences(
                         preferences,
                         parseConstraints(
-                          meals.find((m) => m.name === f)?.constraints,
+                          meals.find(m => m.name === f)?.constraints,
                         ),
                       ),
                     )
-                    .map((food) => (
+                    .map(food => (
                       <option key={`${food}-${day}`} value={`${food}`}>
                         {food}
                       </option>

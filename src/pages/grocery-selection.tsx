@@ -195,7 +195,7 @@ export default function GrocerySelection({ show }: GrocerySelectionProp) {
     }[] = [];
 
     Object.entries(stores).map(([name, stores]) => {
-      stores.map((s) => {
+      stores.map(s => {
         const [lat, lon] = s.location;
         _stores.push({
           name,
@@ -250,68 +250,69 @@ export default function GrocerySelection({ show }: GrocerySelectionProp) {
     <>
       <Container>
         <div
-          className="p-1 plan-panel"
+          className='p-1 plan-panel'
           style={{ overflow: 'scroll', whiteSpace: 'nowrap' }}
         >
           {plans.map((plan, idx) => (
             <ToggleButton
               key={`plan-${idx}`}
               id={`plan-${idx}`}
-              type="radio"
-              variant="outline-dark"
-              value={plan.stores.map((s) => s.address).join('_')}
+              type='radio'
+              variant='outline-dark'
+              value={plan.stores.map(s => s.address).join('_')}
               checked={
-                selectedPlan === plan.stores.map((s) => s.address).join('_')
+                selectedPlan === plan.stores.map(s => s.address).join('_')
               }
-              onChange={(e) => setSelectedPlan(e.currentTarget.value)}
-              className="m-2"
+              onChange={e => setSelectedPlan(e.currentTarget.value)}
+              className='m-2'
               style={
-                selectedPlan === plan.stores.map((s) => s.address).join('_')
+                selectedPlan === plan.stores.map(s => s.address).join('_')
                   ? {}
                   : { backgroundColor: 'white' }
-              }>
-            <>
-              <div className="d-flex flex-row justify-content-center align-items-center">
-                {plan.stores
-                  .map((s, i) => (
-                    <Image
-                      key={`${i}-${s.brand}`}
-                      className="m-1"
-                      width={30}
-                      height={30}
-                      src={ICONS[s.brand]}
-                    ></Image>
-                  ))
-                  .map((c, i) => {
-                    return (
-                      <>
-                        {c}
-                        {i < plan.stores.length - 1 ? (
-                          <div>
-                            <FontAwesomeIcon icon={faCaretRight} size="2xs" />
-                          </div>
-                        ) : (
-                          <></>
-                        )}
-                      </>
-                    );
-                  })}
-              </div>
-              <div className="d-flex flex-row justify-content-between align-items-center">
-                <div style={{ fontWeight: 'bolder', fontSize: 40 }}>
-                  ${plan.travelCost + plan.groceryCost}
+              }
+            >
+              <>
+                <div className='d-flex flex-row justify-content-center align-items-center'>
+                  {plan.stores
+                    .map((s, i) => (
+                      <Image
+                        key={`${i}-${s.brand}`}
+                        className='m-1'
+                        width={30}
+                        height={30}
+                        src={ICONS[s.brand]}
+                      ></Image>
+                    ))
+                    .map((c, i) => {
+                      return (
+                        <>
+                          {c}
+                          {i < plan.stores.length - 1 ? (
+                            <div>
+                              <FontAwesomeIcon icon={faCaretRight} size='2xs' />
+                            </div>
+                          ) : (
+                            <></>
+                          )}
+                        </>
+                      );
+                    })}
                 </div>
-                <div className="d-flex flex-column align-items-start m-2">
-                  <div style={{ lineHeight: '100%' }}>
-                    {plan.travelDistance} mi.
+                <div className='d-flex flex-row justify-content-between align-items-center'>
+                  <div style={{ fontWeight: 'bolder', fontSize: 40 }}>
+                    ${plan.travelCost + plan.groceryCost}
                   </div>
-                  <div style={{ lineHeight: '100%' }}>
-                    {plan.travelTime} min.
+                  <div className='d-flex flex-column align-items-start m-2'>
+                    <div style={{ lineHeight: '100%' }}>
+                      {plan.travelDistance} mi.
+                    </div>
+                    <div style={{ lineHeight: '100%' }}>
+                      {plan.travelTime} min.
+                    </div>
                   </div>
                 </div>
-              </div>
-              {/* {JSON.stringify(plan)} */}
-            </>
+                {/* {JSON.stringify(plan)} */}
+              </>
             </ToggleButton>
           ))}
         </div>

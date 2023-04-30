@@ -24,14 +24,10 @@ export default function UserPreferences({
         key={index}
         name={name}
         value={preferences[name]}
-        setValue={(value) => setPreferences({ ...preferences, [name]: value })}
+        setValue={value => setPreferences({ ...preferences, [name]: value })}
       />
     );
   }
 
-  return (
-    <div className='m-3'>
-      {Object.keys(preferences).map(makeEntry)}
-    </div>
-  );
+  return <div className='m-3'>{Object.keys(preferences).map(makeEntry)}</div>;
 }

@@ -39,33 +39,33 @@ export default function IngredientSelection({
   // let fridayMeal = selectedMeals['Friday'].split("-")[0];
   // let saturdayMeal = selectedMeals['Saturday'].split("-")[0];
   // let sundayMeal = selectedMeals['Sunday'].split("-")[0];
-  let mondayMeal : string = selectedMeals['Monday'];
+  let mondayMeal: string = selectedMeals['Monday'];
   if (mondayMeal !== undefined) {
-    mondayMeal = mondayMeal.split("-")[0];
+    mondayMeal = mondayMeal.split('-')[0];
   }
-  let tuesdayMeal : string = selectedMeals['Tuesday'];
+  let tuesdayMeal: string = selectedMeals['Tuesday'];
   if (tuesdayMeal !== undefined) {
-    tuesdayMeal = tuesdayMeal.split("-")[0];
+    tuesdayMeal = tuesdayMeal.split('-')[0];
   }
-  let wednesdayMeal : string = selectedMeals['Wednesday'];
+  let wednesdayMeal: string = selectedMeals['Wednesday'];
   if (wednesdayMeal !== undefined) {
-    wednesdayMeal = wednesdayMeal.split("-")[0];
+    wednesdayMeal = wednesdayMeal.split('-')[0];
   }
-  let thursdayMeal : string = selectedMeals['Thursday'];
+  let thursdayMeal: string = selectedMeals['Thursday'];
   if (thursdayMeal !== undefined) {
-    thursdayMeal = thursdayMeal.split("-")[0];
+    thursdayMeal = thursdayMeal.split('-')[0];
   }
-  let fridayMeal : string = selectedMeals['Friday'];
+  let fridayMeal: string = selectedMeals['Friday'];
   if (fridayMeal !== undefined) {
-    fridayMeal = fridayMeal.split("-")[0];
+    fridayMeal = fridayMeal.split('-')[0];
   }
-  let saturdayMeal : string = selectedMeals['Saturday'];
+  let saturdayMeal: string = selectedMeals['Saturday'];
   if (saturdayMeal !== undefined) {
-    saturdayMeal = saturdayMeal.split("-")[0];
+    saturdayMeal = saturdayMeal.split('-')[0];
   }
-  let sundayMeal : string = selectedMeals['Sunday'];
+  let sundayMeal: string = selectedMeals['Sunday'];
   if (sundayMeal !== undefined) {
-    sundayMeal = sundayMeal.split("-")[0];
+    sundayMeal = sundayMeal.split('-')[0];
   }
 
   let ingr = new Set<string>();
@@ -193,13 +193,13 @@ export default function IngredientSelection({
         <Card
           key={ingredients}
           style={{ width: '50rem' }}
-          text="white"
-          className="mb-2"
-          bg="dark"
+          text='white'
+          className='mb-2'
+          bg='dark'
         >
           <Card.Header>{ingredients}</Card.Header>
           <Card.Body>
-            <ListGroup className="list-group-flush">
+            <ListGroup className='list-group-flush'>
               {items.map(
                 ([
                   itemName,
@@ -215,15 +215,15 @@ export default function IngredientSelection({
                   // </ListGroup.Item>
                   <Form.Check
                     key={itemName}
-                    type="checkbox"
+                    type='checkbox'
                     label={`${itemName} | ${itemStore} | Original Price: $${itemOPrice} | Discount Price: $${itemDPrice} per ${unit}`}
                     checked={selectedBrands.includes(id)}
-                    onChange={(e) => {
+                    onChange={e => {
                       if (e.target.checked) {
                         setSelectedBrands([...selectedBrands, id]);
                       } else {
                         setSelectedBrands(
-                          selectedBrands.filter((item) => item !== id),
+                          selectedBrands.filter(item => item !== id),
                         );
                       }
                     }}

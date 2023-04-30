@@ -49,14 +49,14 @@ export default function App() {
   }
 
   function handleNext() {
-    const idx = navKeys.findIndex((d) => d === activeTab) + 1;
+    const idx = navKeys.findIndex(d => d === activeTab) + 1;
     if (idx < navKeys.length) {
       setActiveTab(navKeys[idx]);
     }
   }
 
   function handlePrev() {
-    const idx = navKeys.findIndex((d) => d === activeTab) - 1;
+    const idx = navKeys.findIndex(d => d === activeTab) - 1;
     if (idx >= 0) {
       setActiveTab(navKeys[idx]);
     }
@@ -83,38 +83,38 @@ export default function App() {
 
   return (
     <>
-      <Navbar bg="light">
+      <Navbar bg='light'>
         <Container>
           <Navbar.Brand>Meal Navigation</Navbar.Brand>
-          <Navbar.Toggle aria-controls="top-navbar-nav" />
-          <Navbar.Collapse id="top-navbar-nav">
+          <Navbar.Toggle aria-controls='top-navbar-nav' />
+          <Navbar.Collapse id='top-navbar-nav'>
             <Nav
-              defaultActiveKey="user-pref"
-              className="justify-content-end flex-grow-1 pe-3"
+              defaultActiveKey='user-pref'
+              className='justify-content-end flex-grow-1 pe-3'
               onSelect={handleTabChange}
               activeKey={activeTab}
             >
               <Nav.Link
                 style={activeTab === 'user-pref' ? {} : { display: 'none' }}
-                eventKey="user-pref"
+                eventKey='user-pref'
               >
                 User Preferences
               </Nav.Link>
               <Nav.Link
                 style={activeTab === 'meal-sel' ? {} : { display: 'none' }}
-                eventKey="meal-sel"
+                eventKey='meal-sel'
               >
                 Meal Selection
               </Nav.Link>
               <Nav.Link
                 style={activeTab === 'ingr-sel' ? {} : { display: 'none' }}
-                eventKey="ingr-sel"
+                eventKey='ingr-sel'
               >
                 Ingredient Selection
               </Nav.Link>
               <Nav.Link
                 style={activeTab === 'groc-sel' ? {} : { display: 'none' }}
-                eventKey="groc-sel"
+                eventKey='groc-sel'
               >
                 Plan Selection
               </Nav.Link>
@@ -148,7 +148,7 @@ export default function App() {
         <div style={activateStyle('user-pref')}>
           <UserPreferences
             preferences={preferences}
-            setPreferences={(preferences) => {
+            setPreferences={preferences => {
               savePreferences(preferences);
               setPreferences(preferences);
             }}
@@ -183,8 +183,8 @@ export default function App() {
           left: '50%',
           transform: 'translate(-50%, -50%)',
         }}
-        size="lg"
-        className="mb-2 position-fixed fixed-bottom"
+        size='lg'
+        className='mb-2 position-fixed fixed-bottom'
       >
         <Button onClick={handlePrev} disabled={activeTab === 'user-pref'}>
           <FontAwesomeIcon icon={faArrowLeft} />

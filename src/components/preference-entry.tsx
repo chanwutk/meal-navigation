@@ -17,11 +17,11 @@ export default function PreferenceEntry({
   }
 
   return (
-    <div className="d-flex flex-row justify-content-between m-4">
+    <div className='d-flex flex-row justify-content-between m-4'>
       <div>{name}</div>
       <Form>
         <Form.Check
-          type="switch"
+          type='switch'
           id={'custom-switch-' + name}
           onChange={changeToggle}
           checked={value}
