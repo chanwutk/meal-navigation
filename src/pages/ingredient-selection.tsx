@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { meals } from '../data/meals';
+import {ingredient} from '../data/ingredients';
 import { Card, Form, ListGroup } from 'react-bootstrap';
 
 interface IngredientSelectionProp {
@@ -23,13 +24,50 @@ export default function IngredientSelection({
     'Saturday',
     'Sunday',
   ];
-  const mondayMeal = selectedMeals['Monday'];
-  const tuesdayMeal = selectedMeals['Tuesday'];
-  const wednesdayMeal = selectedMeals['Wednesday'];
-  const thursdayMeal = selectedMeals['Thursday'];
-  const fridayMeal = selectedMeals['Friday'];
-  const saturdayMeal = selectedMeals['Saturday'];
-  const sundayMeal = selectedMeals['Sunday'];
+  // const mondayMeal = selectedMeals['Monday'].substring(0, selectedMeals['Monday'].indexOf("-"));
+  // const tuesdayMeal = selectedMeals['Tuesday'].substring(0, selectedMeals['Tuesday'].indexOf("-"));
+  // const wednesdayMeal = selectedMeals['Wednesday'].substring(0, selectedMeals['Wednesday'].indexOf("-"));
+  // const thursdayMeal = selectedMeals['Thursday'].substring(0, selectedMeals['Thursday'].indexOf("-"));
+  // const fridayMeal = selectedMeals['Friday'].substring(0, selectedMeals['Friday'].indexOf("-"));
+  // const saturdayMeal = selectedMeals['Saturday'].substring(0, selectedMeals['Saturday'].indexOf("-"));
+  // const sundayMeal = selectedMeals['Sunday'].substring(0, selectedMeals['Sunday'].indexOf("-"));
+
+  // let mondayMeal = selectedMeals['Monday'].split("-")[0];
+  // let tuesdayMeal = selectedMeals['Tuesday'].split("-")[0];
+  // let wednesdayMeal = selectedMeals['Wednesday'].split("-")[0];
+  // let thursdayMeal = selectedMeals['Thursday'].split("-")[0];
+  // let fridayMeal = selectedMeals['Friday'].split("-")[0];
+  // let saturdayMeal = selectedMeals['Saturday'].split("-")[0];
+  // let sundayMeal = selectedMeals['Sunday'].split("-")[0];
+  let mondayMeal : string = selectedMeals['Monday'];
+  if (mondayMeal !== undefined) {
+    mondayMeal = mondayMeal.split("-")[0];
+  }
+  let tuesdayMeal : string = selectedMeals['Tuesday'];
+  if (tuesdayMeal !== undefined) {
+    tuesdayMeal = tuesdayMeal.split("-")[0];
+  }
+  let wednesdayMeal : string = selectedMeals['Wednesday'];
+  if (wednesdayMeal !== undefined) {
+    wednesdayMeal = wednesdayMeal.split("-")[0];
+  }
+  let thursdayMeal : string = selectedMeals['Thursday'];
+  if (thursdayMeal !== undefined) {
+    thursdayMeal = thursdayMeal.split("-")[0];
+  }
+  let fridayMeal : string = selectedMeals['Friday'];
+  if (fridayMeal !== undefined) {
+    fridayMeal = fridayMeal.split("-")[0];
+  }
+  let saturdayMeal : string = selectedMeals['Saturday'];
+  if (saturdayMeal !== undefined) {
+    saturdayMeal = saturdayMeal.split("-")[0];
+  }
+  let sundayMeal : string = selectedMeals['Sunday'];
+  if (sundayMeal !== undefined) {
+    sundayMeal = sundayMeal.split("-")[0];
+  }
+
   let ingr = new Set<string>();
   //Don't need to use ingr_count in this page, pass it to the next page!
   let ingr_count = new Map<string, number>();
@@ -123,9 +161,9 @@ export default function IngredientSelection({
   for (const i of ingr_arr) {
     data_map.set(i, []);
     // @ts-ignore
-    let unit = data['ingredient'][i]['unit'];
+    let unit = ingredient[i]['unit'];
     // @ts-ignore
-    for (const n of data['ingredient'][i]['product']) {
+    for (const n of ingredient[i]['product']) {
       let info = [];
       info.push(n.name);
       info.push(n.brand);
@@ -153,15 +191,15 @@ export default function IngredientSelection({
       {/*  </ul>*/}
       {/*</div>*/}
 
-      {Array.from(data_map.entries()).map(([ingredient, items]) => (
+      {Array.from(data_map.entries()).map(([ingredients, items]) => (
         <Card
-          key={ingredient}
+          key={ingredients}
           style={{ width: '50rem' }}
           text="white"
           className="mb-2"
           bg="dark"
         >
-          <Card.Header>{ingredient}</Card.Header>
+          <Card.Header>{ingredients}</Card.Header>
           <Card.Body>
             <ListGroup className="list-group-flush">
               {items.map(
