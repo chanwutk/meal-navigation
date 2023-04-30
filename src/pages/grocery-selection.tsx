@@ -24,6 +24,12 @@ const TILES = {
 };
 const ATTRIBUTION = '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors';
 
+const ICONS: {[k: string]: string} = {
+  'Whole Food': './icon-whole-foods.png',
+  'Trader Joe\'s': './icon-trader-joes.png',
+  'Safeway': './icon-safeway.png',
+};
+
 interface MapOpsProp {
   show: boolean;
 }
@@ -99,12 +105,12 @@ export default function GrocerySelection({show, meals}: GrocerySelectionProp) {
     <Marker
       position={CURRENT_LOCATION}
       icon={new Icon({
-        iconUrl: markerIconPng,
-        iconSize: [25, 41],
-        iconAnchor: [12.5, 41],
-        popupAnchor: [0, -41],
+        iconUrl: './profile-picture.png',
+        iconSize: [50, 50],
+        iconAnchor: [25, 25],
+        popupAnchor: [0, -25],
       })}
-    ><Popup>You are here.</Popup></Marker>
+    />
     {Object.entries(paths)
       .sort(([k1, _v1], [k2, _v2]) => (+(k1 === activeMarker) - +(k2 === activeMarker)))
       .map(([key, value], i) =>
@@ -119,14 +125,14 @@ export default function GrocerySelection({show, meals}: GrocerySelectionProp) {
         key={'marker-' + i}
         position={value.end as [number, number]}
         icon={new Icon({
-          iconUrl: markerIconPng,
-          iconSize: [25, 41],
-          iconAnchor: [12.5, 41],
-          popupAnchor: [0, -41],
+          iconUrl: ICONS[key.split('_')[0]],
+          iconSize: [50, 50],
+          iconAnchor: [25, 25],
+          popupAnchor: [0, -25],
         })}
         eventHandlers={{click: () => setActiveMarker(key === activeMarker ? '' : key)}}
       >
-        <Popup closeOnClick closeOnEscapeKey>{key.split('_').join(': ')}</Popup>
+        <Popup closeOnClick closeOnEscapeKey><b>{key.split('_')[0]}</b>: {key.split('_')[1]}</Popup>
       </Marker>
     )}
   </MapContainer>

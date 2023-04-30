@@ -8,6 +8,8 @@ import MealSelection from './pages/meal-selection';
 import { Preferences } from './types';
 import loadPreferences, {defaultPreferences} from './utils/load-preferences';
 import savePreferences from './utils/save-preferences';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faArrowLeft, faArrowRight } from '@fortawesome/free-solid-svg-icons';
 
 export type NavKey = 'user-pref' | 'meal-sel' | 'ingr-sel' | 'groc-sel';
 
@@ -66,7 +68,7 @@ export default function App() {
 
   return (
     <>
-      <Navbar bg='light' expand='lg'>
+      <Navbar bg='light'>
         <Container>
           <Navbar.Brand>Meal Navigation</Navbar.Brand>
           <Navbar.Toggle aria-controls="top-navbar-nav" />
@@ -77,10 +79,10 @@ export default function App() {
                 onSelect={handleTabChange}
                 activeKey={activeTab}
               >
-                <Nav.Link eventKey='user-pref'>User Preferences</Nav.Link>
-                <Nav.Link eventKey='meal-sel'>Meal Selection</Nav.Link>
-                <Nav.Link eventKey='ingr-sel'>Ingredient Selection</Nav.Link>
-                <Nav.Link eventKey='groc-sel'>Grocery Selection</Nav.Link>
+                <Nav.Link style={activeTab === 'user-pref' ? {} : {display: 'none'}} eventKey='user-pref'>User Preferences</Nav.Link>
+                <Nav.Link style={activeTab === 'meal-sel' ? {} : {display: 'none'}} eventKey='meal-sel'>Meal Selection</Nav.Link>
+                <Nav.Link style={activeTab === 'ingr-sel' ? {} : {display: 'none'}} eventKey='ingr-sel'>Ingredient Selection</Nav.Link>
+                <Nav.Link style={activeTab === 'groc-sel' ? {} : {display: 'none'}} eventKey='groc-sel'>Grocery Selection</Nav.Link>
               </Nav>
           </Navbar.Collapse>
         </Container>
@@ -108,6 +110,7 @@ export default function App() {
           <IngredientSelection selectedMeals={selectedMeals} selectedBrands={selectedBrands} setSelectedBrands={setSelectedBrands}/>
         </div>
       </Container>
+      <div style={{height: 100, opacity: 0, ...(activeTab === 'groc-sel' ? {display: 'none'} : {})}}></div>
 
       <ButtonGroup
         style={{maxWidth: 400, left: '50%', transform: 'translate(-50%, -50%)'}}
@@ -117,11 +120,15 @@ export default function App() {
         <Button
           onClick={handlePrev}
           disabled={activeTab === 'user-pref'}
-        >Back</Button>
+        >
+          <FontAwesomeIcon icon={faArrowLeft} />
+        </Button>
         <Button
           onClick={handleNext}
           disabled={activeTab === 'groc-sel'}
-        >Next</Button>
+        >
+          <FontAwesomeIcon icon={faArrowRight} />
+        </Button>
       </ButtonGroup>
     </>
   );
