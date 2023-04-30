@@ -9,8 +9,6 @@ import {data} from '../data/data';
 interface MealSelectionProp {
   selectedMeals: {[key: string]: string};
   setSelectedMeals: React.Dispatch<React.SetStateAction<{[key: string]: string}>>;
-  preferences: Preferences;
-  setPreferences: (p: Preferences) => void;
 };
 
 interface MenuOption {
