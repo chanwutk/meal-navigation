@@ -39,7 +39,7 @@ export default function UserPreferences({
     <div className='m-3'>
       {[...preferences.keys()].map((name, i) => (
         <div
-          className='d-flex flex-row justify-content-between m-4'
+          className='d-flex flex-row justify-content-between m-2'
           key={`preference-${i}`}
         >
           <div>{name}</div>

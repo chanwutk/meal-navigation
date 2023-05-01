@@ -42,7 +42,7 @@ interface Plan {
 
 interface GrocerySelectionProp {
   show: boolean;
-  selectedIngredients: [string, IngredientData][];
+  selectedIngredients: { ingredient: string; ingredientData: IngredientData }[];
 }
 
 const TILES = {
@@ -325,7 +325,7 @@ export default function GrocerySelection({
                   <span style={{ color: 'grey' }}>$</span>
                   {plan && plan.groceryCost + plan.travelCost}
                 </h1>
-                <div>
+                <div className='mb-2'>
                   {plan && plan.travelDistance} Miles |{' '}
                   {plan && plan.travelTime} Minutes
                 </div>
@@ -340,6 +340,7 @@ export default function GrocerySelection({
                   plan.stores.map((s, i) => (
                     <div
                       key={`modal-${i}-${s.brand}`}
+                      style={{ width: '90%' }}
                       className='d-flex flex-column align-items-center'
                     >
                       <div style={{ fontSize: 40, color: 'grey' }}>
@@ -357,24 +358,45 @@ export default function GrocerySelection({
                             height={100}
                             src={ICONS[s.brand]}
                           ></Image>
-                          <Card.Text>
+                          <Card.Text style={{ width: '90%' }}>
                             {selectedIngredients
-                              .map(([ing, ingData]) => [ing, ...ingData])
-                              .filter(ing => ing[5] === s.brand)
-                              .map(([_store, ingredientData]) => (
-                                <>
-                                  {_store} {JSON.stringify(ingredientData)}
-                                </>
+                              .sort(
+                                (ing1, ing2) =>
+                                  ing2.ingredientData[3] -
+                                  ing1.ingredientData[3],
+                              )
+                              // .filter((ingredient, idx, ingredientArray) => idx === ingredientArray.map(d => d).filter(d => true)[0])
+                              .filter(
+                                (ing, i, ings) =>
+                                  i ===
+                                  ings
+                                    .map((ing2, i2) => ({ ing2, i2 }))
+                                    .filter(
+                                      ing2 =>
+                                        ing2.ing2.ingredient === ing.ingredient,
+                                    )
+                                    .map(ing2i2 => ing2i2.i2)[0],
+                              )
+                              .filter(ing => ing.ingredientData[4] === s.brand)
+                              .map(({ ingredient, ingredientData }) => (
+                                <div
+                                  className='d-flex flex-row justify-content-between'
+                                  style={{ width: '100%' }}
+                                >
+                                  {/* {ingredient} {JSON.stringify(ingredientData)} */}
+                                  <div className='d-flex flex-column align-items-begin'>
+                                    <div>{ingredient}</div>
+                                    <div style={{ fontSize: 10 }}>
+                                      {ingredientData[0]}
+                                    </div>
+                                  </div>
+                                  <div className='d-flex flex-column align-items-begin'>
+                                    <div>{ingredientData[3]}</div>
+                                    {/* <div style={{ fontSize: 10 }}>i</div> */}
+                                  </div>
+                                </div>
                               ))}
                           </Card.Text>
-                          <Button
-                            variant='primary'
-                            href='https://chanwutk.github.io'
-                          >
-                            Navigate
-                          </Button>
-                          {/* <Card.Link href='#'>Card Link</Card.Link>
-                          <Card.Link href='#'>Another Link</Card.Link> */}
                         </Card.Body>
                       </Card>
                     </div>
@@ -385,6 +407,18 @@ export default function GrocerySelection({
               </div>
             </Modal.Body>
             <Modal.Footer>
+              <Button
+                variant='primary'
+                href={
+                  'https://www.google.com/maps/dir/' +
+                  (plan &&
+                    plan.stores
+                      .map(ss => ss.address.split(' ').join('+'))
+                      .join('/'))
+                }
+              >
+                Navigate
+              </Button>
               <Button variant='secondary' onClick={() => setModelShow(false)}>
                 Close
               </Button>

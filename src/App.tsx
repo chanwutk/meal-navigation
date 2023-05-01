@@ -26,7 +26,7 @@ export default function App() {
     {},
   );
   const [selectedIngredients, setSelectedIngredients] = useState<
-    [string, IngredientData][]
+    { ingredient: string; ingredientData: IngredientData }[]
   >([]);
 
   useEffect(() => console.log(selectedIngredients), [selectedIngredients]);

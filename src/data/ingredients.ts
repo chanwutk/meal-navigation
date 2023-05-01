@@ -875,13 +875,13 @@ export const ingredient: {
         discount_price: 3.79,
         store: "Trader Joe's",
       },
-      {
-        name: 'Daisy Sour Cream Pure & Natural',
-        brand: 'Daisy',
-        original_price: 2.49,
-        discount_price: 2.49,
-        store: 'Safeway',
-      },
+      // {
+      //   name: 'Daisy Sour Cream Pure & Natural',
+      //   brand: 'Daisy',
+      //   original_price: 2.49,
+      //   discount_price: 2.49,
+      //   store: 'Safeway',
+      // },
       {
         name: 'Lucerne Sour Cream',
         brand: 'Lucerne',

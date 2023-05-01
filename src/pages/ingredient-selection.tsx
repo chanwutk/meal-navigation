@@ -6,7 +6,9 @@ import { ICONS } from './grocery-selection';
 
 interface IngredientSelectionProp {
   selectedMeals: { [key: string]: string };
-  setSelectedIngredients: (d: [string, IngredientData][]) => void;
+  setSelectedIngredients: (
+    d: { ingredient: string; ingredientData: IngredientData }[],
+  ) => void;
 }
 
 export type IngredientData = [
@@ -171,7 +173,7 @@ export default function IngredientSelection({
       [...data_map].flatMap(([ingredient, ingredientBrands]) =>
         ingredientBrands
           .filter(([_n, _b, _o, _d, _s, _u, id]) => brands.has(id))
-          .map(d => [ingredient, d]),
+          .map(d => ({ ingredient, ingredientData: d })),
       ),
     );
   }, [selectedBrands]);
