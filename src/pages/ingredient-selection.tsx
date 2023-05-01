@@ -1,14 +1,17 @@
 import React, { useState } from 'react';
 import { meals } from '../data/meals';
 import { ingredient } from '../data/ingredients';
-import { Card, Form, ListGroup } from 'react-bootstrap';
+import { Card, Form, ListGroup, Image } from 'react-bootstrap';
+import { ICONS } from './grocery-selection';
 
 interface IngredientSelectionProp {
   selectedMeals: { [key: string]: string };
   //Make it global
-  selectedBrands: string[];
-  setSelectedBrands: React.Dispatch<React.SetStateAction<string[]>>;
+  selectedBrands: number[];
+  setSelectedBrands: React.Dispatch<React.SetStateAction<number[]>>;
 }
+
+type IngredientData = [string, string, number, number, string, string, number];
 
 export default function IngredientSelection({
   selectedMeals,
@@ -71,7 +74,7 @@ export default function IngredientSelection({
   let ingr = new Set<string>();
   //Don't need to use ingr_count in this page, pass it to the next page!
   let ingr_count = new Map<string, number>();
-  let data_map = new Map<string, Array<Array<string>>>();
+  let data_map = new Map<string, Array<IngredientData>>();
   //                    {ingredient: [[name0, brand0, original0 price0, discount price0, store0],
   //                                 [name1, brand1, original1 price1, discount price1, store1]]}
 
@@ -160,24 +163,23 @@ export default function IngredientSelection({
   let id = 0;
   for (const i of ingr_arr) {
     data_map.set(i, []);
-    let unit = ingredient[i]['unit'];
+    const unit = ingredient[i]['unit'];
     for (const n of ingredient[i]['product']) {
-      let info = [];
-      info.push(n.name);
-      info.push(n.brand);
-      info.push(n.original_price);
-      info.push(n.discount_price);
-      info.push(n.store);
-      info.push(unit);
-      info.push(id);
+      const info: IngredientData = [
+        n.name,
+        n.brand,
+        n.original_price,
+        n.discount_price,
+        n.store,
+        unit,
+        id,
+      ];
       id = id + 1;
       if (info[1] == info[4]) {
         info[1] = 'Store Brand';
       }
-      // @ts-ignore
-      data_map.get(i).push(info);
+      data_map.get(i)?.push(info);
     }
-    console.log(data_map);
   }
 
   return (
@@ -192,7 +194,7 @@ export default function IngredientSelection({
       {Array.from(data_map.entries()).map(([ingredients, items]) => (
         <Card
           key={ingredients}
-          style={{ width: '50rem' }}
+          // style={{ width: '50rem' }}
           text='white'
           className='mb-2'
           bg='dark'
@@ -214,9 +216,29 @@ export default function IngredientSelection({
                   //   {itemName} | {itemStore} | Original Price: ${itemOPrice} | Discount Price: ${itemDPrice} per {unit}
                   // </ListGroup.Item>
                   <Form.Check
-                    key={itemName}
+                    className="m-1"
+                    key={`${itemName}-${itemBrand}`}
                     type='checkbox'
-                    label={`${itemName} | ${itemStore} | Original Price: $${itemOPrice} | Discount Price: $${itemDPrice} per ${unit}`}
+                    label={
+                      <div className="d-flex flex-row align-items-center">
+                        <Image
+                          src={ICONS[itemStore]}
+                          width={40}
+                          height={40}
+                        ></Image>{' '}
+                        <div className="d-flex flex-column justify-content-center mx-2">
+                        {itemName}
+                        <div>
+                        <s style={{color: 'grey'}}>
+                          {'$'}
+                          {itemOPrice}
+                        </s>{' '}
+                        {'$'}
+                        {itemDPrice} {`per ${unit}`}
+                        </div>
+                        </div>
+                      </div>
+                    }
                     checked={selectedBrands.includes(id)}
                     onChange={e => {
                       if (e.target.checked) {

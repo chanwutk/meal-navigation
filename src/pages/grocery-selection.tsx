@@ -43,7 +43,7 @@ const TILES = {
 const ATTRIBUTION =
   '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors';
 
-const ICONS: { [k: string]: string } = {
+export const ICONS: { [k: string]: string } = {
   'Whole Food': './icon-whole-foods.png',
   "Trader Joe's": './icon-trader-joes.png',
   Safeway: './icon-safeway.png',
@@ -162,18 +162,18 @@ export default function GrocerySelection({ show }: GrocerySelectionProp) {
       groceryCost: 30,
       stores: [
         {
-          brand: 'Safeway',
-          address: '1444 Shattuck Place, Berkeley, CA 94709',
-          phone: '(510) 526-3086',
-          time: '05:00-24:00',
-          location: [37.880819, -122.269725],
-        },
-        {
           brand: "Trader Joe's",
           address: '5727 College Ave, Oakland, CA 94618',
           phone: '(510) 923-9428',
           time: '08:00-21:00',
           location: [37.845923, -122.252565],
+        },
+        {
+          brand: 'Safeway',
+          address: '1444 Shattuck Place, Berkeley, CA 94709',
+          phone: '(510) 526-3086',
+          time: '05:00-24:00',
+          location: [37.880819, -122.269725],
         },
         {
           brand: 'Whole Food',
@@ -254,8 +254,8 @@ export default function GrocerySelection({ show }: GrocerySelectionProp) {
         >
           {plans.map((plan, idx) => (
             <ToggleButton
-              key={`plan-${idx}`}
-              id={`plan-${idx}`}
+              key={`plan-key-${idx}`}
+              id={`plan-id-${idx}`}
               type='radio'
               variant='outline-dark'
               value={plan.stores.map(s => s.address).join('_')}
@@ -275,7 +275,7 @@ export default function GrocerySelection({ show }: GrocerySelectionProp) {
                   {plan.stores
                     .map((s, i) => (
                       <Image
-                        key={`${i}-${s.brand}`}
+                        key={`img-plan${idx}-${i}-${s.brand}`}
                         className='m-1'
                         width={30}
                         height={30}
@@ -284,7 +284,7 @@ export default function GrocerySelection({ show }: GrocerySelectionProp) {
                     ))
                     .map((c, i) => {
                       return (
-                        <>
+                        <div key={`img-plan${idx}-${i}-with-caret`}>
                           {c}
                           {i < plan.stores.length - 1 ? (
                             <div>
@@ -293,7 +293,7 @@ export default function GrocerySelection({ show }: GrocerySelectionProp) {
                           ) : (
                             <></>
                           )}
-                        </>
+                        </div>
                       );
                     })}
                 </div>
@@ -310,7 +310,6 @@ export default function GrocerySelection({ show }: GrocerySelectionProp) {
                     </div>
                   </div>
                 </div>
-                {/* {JSON.stringify(plan)} */}
               </>
             </ToggleButton>
           ))}

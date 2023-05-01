@@ -38,7 +38,7 @@ const randomLists: string[][] = [];
 for (let i = 0; i < 7; i++) {
   randomLists.push(getRandomItems(allfoods, 5));
 }
-console.log(randomLists);
+// console.log(randomLists);
 
 const menuOptions: MenuOption[] = [
   { id: 1, name: 'Colcannon Potatoes' },

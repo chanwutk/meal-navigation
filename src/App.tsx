@@ -30,7 +30,7 @@ export default function App() {
   const [selectedMeals, setSelectedMeals] = useState<{ [key: string]: string }>(
     {},
   );
-  const [selectedBrands, setSelectedBrands] = useState<string[]>([]);
+  const [selectedBrands, setSelectedBrands] = useState<number[]>([]);
 
   function handleTabChange(eventKey: string | null) {
     if (
@@ -124,7 +124,11 @@ export default function App() {
       </Navbar>
 
       <div style={activateStyle('groc-sel')}>
-        <GrocerySelection show={activeTab === 'groc-sel'} meals={[]} />
+        <GrocerySelection
+          show={activeTab === 'groc-sel'}
+          meals={[]}
+          // ingredients={selectedBrands}
+        />
       </div>
 
       <Container>
