@@ -1,7 +1,7 @@
 export const constraints = [
   'Vegetarian',
-  'No Cilantro',
-  'No Lamb',
-  'No Pork',
-  'No Lactose',
+  'Cilantro',
+  'Lamb',
+  'Pork',
+  'Lactose',
 ] as const;

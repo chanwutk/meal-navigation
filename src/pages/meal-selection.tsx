@@ -1,10 +1,6 @@
 import React from 'react';
-import { useState } from 'react';
-import IngredientSelection from './ingredient-selection';
-import { Preferences } from '../types';
-import UserPreferences from './user-preferences';
+import { Preferences } from '../data/preferences';
 import { meals } from '../data/meals';
-import parsePreferences from '../utils/parse-preferences';
 import validatePreferences from '../utils/validate-preferences';
 import parseConstraints from '../utils/parse-constraints';
 
@@ -57,7 +53,6 @@ export default function MealSelection({
   selectedMeals,
   setSelectedMeals,
 }: MealSelectionProp) {
-  const parsedPreferences = parsePreferences(preferences);
   const daysOfWeek = [
     'Monday',
     'Tuesday',

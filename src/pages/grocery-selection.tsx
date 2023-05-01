@@ -32,7 +32,6 @@ interface GrocerySelectionProp {
   show: boolean;
   // TODO
   meals: any[];
-  plans: any[];
 }
 
 const TILES = {

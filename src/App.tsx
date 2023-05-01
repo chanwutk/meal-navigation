@@ -12,7 +12,7 @@ import UserPreferences from './pages/user-preferences';
 import IngredientSelection from './pages/ingredient-selection';
 import GrocerySelection from './pages/grocery-selection';
 import MealSelection from './pages/meal-selection';
-import { Preferences } from './types';
+import { Preferences } from './data/preferences';
 import loadPreferences, { defaultPreferences } from './utils/load-preferences';
 import savePreferences from './utils/save-preferences';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -124,24 +124,7 @@ export default function App() {
       </Navbar>
 
       <div style={activateStyle('groc-sel')}>
-        <GrocerySelection
-          show={activeTab === 'groc-sel'}
-          meals={[]}
-          plans={[
-            'plan1',
-            'plan2',
-            'plan1',
-            'plan2',
-            'plan1',
-            'plan2',
-            'plan1',
-            'plan2',
-            'plan1',
-            'plan2',
-            'plan1',
-            'plan2',
-          ]}
-        />
+        <GrocerySelection show={activeTab === 'groc-sel'} meals={[]} />
       </div>
 
       <Container>

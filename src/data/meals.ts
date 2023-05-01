@@ -18,7 +18,7 @@ export const meals: {
       { category: 'onion', unit: 'each', addable: true, amount: 1 },
       { category: 'milk', unit: 'cups', addable: false, amount: 1 },
     ],
-    constraints: [false, true, true, false, false],
+    constraints: [false, false, false, true, true],
     recipe_link:
       'https://chefsavvy.com/colcannon-potatoes-aka-irish-mashed-potatoes/',
   },
@@ -31,7 +31,7 @@ export const meals: {
       { category: 'sugar', unit: 'tsp', addable: false, amount: 1 },
       { category: 'oil', unit: 'tsp', addable: false, amount: 1 },
     ],
-    constraints: [true, true, true, true, true],
+    constraints: [true, false, false, false, false],
     recipe_link: 'https://chefsavvy.com/japanese-cucumber-salad/',
   },
   {
@@ -43,7 +43,7 @@ export const meals: {
       { category: 'oil', unit: 'tsp', addable: false, amount: 1 },
       { category: 'salt', unit: 'tsp', addable: false, amount: 1 },
     ],
-    constraints: [true, true, true, true, true],
+    constraints: [true, false, false, false, false],
     recipe_link: 'https://chefsavvy.com/breakfast-potatoes/',
   },
   {
@@ -55,7 +55,7 @@ export const meals: {
       { category: 'rice', unit: 'cups', addable: false, amount: 4 },
       { category: 'soy sauce', unit: 'tsp', addable: false, amount: 0.5 },
     ],
-    constraints: [true, true, true, true, true],
+    constraints: [true, false, false, false, false],
     recipe_link: 'https://chefsavvy.com/the-best-fried-rice/',
   },
   {
@@ -65,7 +65,7 @@ export const meals: {
       { category: 'oil', unit: 'cups', addable: false, amount: 2 },
       { category: 'salt', unit: 'tsp', addable: false, amount: 1 },
     ],
-    constraints: [true, true, true, true, true],
+    constraints: [true, false, false, false, false],
     recipe_link: 'https://chefsavvy.com/homemade-french-fries/',
   },
   {
@@ -76,7 +76,7 @@ export const meals: {
       { category: 'milk', unit: 'cup', addable: false, amount: 0.5 },
       { category: 'cream', unit: 'cup', addable: false, amount: 1 },
     ],
-    constraints: [true, true, true, true, false],
+    constraints: [true, false, false, false, true],
     recipe_link: 'https://chefsavvy.com/creamy-mashed-potatoes/',
   },
   {
@@ -93,7 +93,7 @@ export const meals: {
       { category: 'milk', unit: 'cup', addable: false, amount: 0.75 },
       { category: 'salt', unit: 'tsp', addable: false, amount: 1 },
     ],
-    constraints: [true, true, true, true, false],
+    constraints: [true, false, false, false, true],
     recipe_link: 'https://chefsavvy.com/garlic-cheese-biscuits/',
   },
   {
@@ -109,7 +109,7 @@ export const meals: {
       },
       { category: 'salt', unit: 'tsp', addable: false, amount: 1 },
     ],
-    constraints: [true, true, true, true, true],
+    constraints: [true, false, false, false, false],
     recipe_link: 'https://chefsavvy.com/grilled-sweet-potato-wedges/',
   },
   {
@@ -119,7 +119,7 @@ export const meals: {
       { category: 'oil', unit: 'cups', addable: false, amount: 3 },
       { category: 'salt', unit: 'tsp', addable: false, amount: 1 },
     ],
-    constraints: [true, true, true, true, true],
+    constraints: [true, false, false, false, false],
     recipe_link: 'https://chefsavvy.com/homemade-potato-chips/',
   },
   {
@@ -135,7 +135,7 @@ export const meals: {
       { category: 'salt', unit: 'tsp', addable: false, amount: 0.25 },
       { category: 'onion', unit: 'each', addable: true, amount: 1 },
     ],
-    constraints: [true, true, true, true, true],
+    constraints: [true, false, false, false, false],
     recipe_link: 'https://chefsavvy.com/egg-muffin-cups/',
   },
   {
@@ -145,7 +145,7 @@ export const meals: {
       { category: 'flour', unit: 'cups', addable: false, amount: 2 },
       { category: 'egg', unit: 'each', addable: false, amount: 2 },
     ],
-    constraints: [true, true, true, true, true],
+    constraints: [true, false, false, false, false],
     recipe_link: 'https://chefsavvy.com/leftover-mashed-potato-gnocchi/',
   },
 ];
