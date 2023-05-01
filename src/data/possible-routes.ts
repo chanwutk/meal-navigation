@@ -19,3 +19,5 @@ export const possibleRoutes = [
 function store(name: string, address: number) {
   return { name, address };
 }
+
+possibleRoutes.forEach(route => {});

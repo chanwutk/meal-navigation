@@ -1,15 +1,10 @@
 import { useEffect, useState } from 'react';
-import {
-  Container,
-  Navbar,
-  Nav,
-  Button,
-  ButtonGroup,
-  ButtonToolbar,
-} from 'react-bootstrap';
+import { Container, Navbar, Nav, Button, ButtonGroup } from 'react-bootstrap';
 
 import UserPreferences from './pages/user-preferences';
-import IngredientSelection from './pages/ingredient-selection';
+import IngredientSelection, {
+  IngredientData,
+} from './pages/ingredient-selection';
 import GrocerySelection from './pages/grocery-selection';
 import MealSelection from './pages/meal-selection';
 import { Preferences } from './data/preferences';
@@ -30,7 +25,11 @@ export default function App() {
   const [selectedMeals, setSelectedMeals] = useState<{ [key: string]: string }>(
     {},
   );
-  const [selectedBrands, setSelectedBrands] = useState<number[]>([]);
+  const [selectedIngredients, setSelectedIngredients] = useState<
+    [string, IngredientData][]
+  >([]);
+
+  useEffect(() => console.log(selectedIngredients), [selectedIngredients]);
 
   function handleTabChange(eventKey: string | null) {
     if (
@@ -126,8 +125,7 @@ export default function App() {
       <div style={activateStyle('groc-sel')}>
         <GrocerySelection
           show={activeTab === 'groc-sel'}
-          meals={[]}
-          // ingredients={selectedBrands}
+          selectedIngredients={selectedIngredients}
         />
       </div>
 
@@ -151,8 +149,7 @@ export default function App() {
         <div style={activateStyle('ingr-sel')}>
           <IngredientSelection
             selectedMeals={selectedMeals}
-            selectedBrands={selectedBrands}
-            setSelectedBrands={setSelectedBrands}
+            setSelectedIngredients={setSelectedIngredients}
           />
         </div>
       </Container>

@@ -13,10 +13,22 @@ import { stores } from '../data/stores';
 import { paths } from '../data/paths';
 
 import 'leaflet/dist/leaflet.css';
-import { ToggleButton, Image, Container } from 'react-bootstrap';
+import {
+  ToggleButton,
+  Image,
+  Container,
+  Modal,
+  Button,
+  Card,
+} from 'react-bootstrap';
 import { Store } from '../types';
-import { faCaretRight } from '@fortawesome/free-solid-svg-icons';
+import {
+  faArrowDown,
+  faCaretRight,
+  faCircleInfo,
+} from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { IngredientData } from './ingredient-selection';
 
 const CURRENT_LOCATION: LatLngTuple = [37.87607, -122.258502];
 
@@ -30,8 +42,7 @@ interface Plan {
 
 interface GrocerySelectionProp {
   show: boolean;
-  // TODO
-  meals: any[];
+  selectedIngredients: [string, IngredientData][];
 }
 
 const TILES = {
@@ -63,128 +74,135 @@ function MapOps({ show }: MapOpsProp) {
   return null;
 }
 
-export default function GrocerySelection({ show }: GrocerySelectionProp) {
-  // const [directions, setDirections] = useState<{[k: string]: Path}>({});
+const defaultPlans: Plan[] = [
+  {
+    stores: [
+      {
+        brand: 'Whole Food',
+        address: '5110 Telegraph Ave, Oakland, CA 94609',
+        phone: '(510) 903-2222',
+        time: '08:00-21:00',
+        location: [37.837657, -122.262078],
+      },
+      {
+        brand: "Trader Joe's",
+        address: '5700 Christie Ave, Emeryville, CA 94608',
+        phone: '(510) 658-8091',
+        time: '08:00-21:00',
+        location: [37.837047, -122.293903],
+      },
+      {
+        brand: 'Safeway',
+        address: '6310 College Ave, Oakland, CA 94618',
+        phone: '(510) 985-0012',
+        time: '05:00-24:00',
+        location: [37.85073, -122.252364],
+      },
+    ],
+    travelCost: 3,
+    travelTime: 15,
+    travelDistance: 3,
+    groceryCost: 30,
+  },
+  {
+    travelCost: 2,
+    travelTime: 20,
+    travelDistance: 3,
+    groceryCost: 60,
+    stores: [
+      {
+        brand: "Trader Joe's",
+        address: '5727 College Ave, Oakland, CA 94618',
+        phone: '(510) 923-9428',
+        time: '08:00-21:00',
+        location: [37.845923, -122.252565],
+      },
+      {
+        brand: 'Whole Food',
+        address: '1025 Gilman St, Berkeley, CA 94710',
+        phone: '(510) 809-8293',
+        time: '08:00-22:00',
+        location: [37.880569, -122.297177],
+      },
+      {
+        brand: 'Safeway',
+        address: '1550 Shattuck Ave., Berkeley, CA 94709',
+        phone: '(510) 841-7942',
+        time: '06:00-23:00',
+        location: [37.878793, -122.269677],
+      },
+    ],
+  },
+  {
+    travelCost: 1,
+    travelTime: 2,
+    travelDistance: 1,
+    groceryCost: 30,
+    stores: [
+      {
+        brand: 'Safeway',
+        address: '1444 Shattuck Place, Berkeley, CA 94709',
+        phone: '(510) 526-3086',
+        time: '05:00-24:00',
+        location: [37.880819, -122.269725],
+      },
+      {
+        brand: "Trader Joe's",
+        address: '5727 College Ave, Oakland, CA 94618',
+        phone: '(510) 923-9428',
+        time: '08:00-21:00',
+        location: [37.845923, -122.252565],
+      },
+      {
+        brand: 'Whole Food',
+        address: '1025 Gilman St, Berkeley, CA 94710',
+        phone: '(510) 809-8293',
+        time: '08:00-22:00',
+        location: [37.880569, -122.297177],
+      },
+    ],
+  },
+  {
+    travelCost: 1,
+    travelTime: 2,
+    travelDistance: 1,
+    groceryCost: 30,
+    stores: [
+      {
+        brand: "Trader Joe's",
+        address: '5727 College Ave, Oakland, CA 94618',
+        phone: '(510) 923-9428',
+        time: '08:00-21:00',
+        location: [37.845923, -122.252565],
+      },
+      {
+        brand: 'Safeway',
+        address: '1444 Shattuck Place, Berkeley, CA 94709',
+        phone: '(510) 526-3086',
+        time: '05:00-24:00',
+        location: [37.880819, -122.269725],
+      },
+      {
+        brand: 'Whole Food',
+        address: '1025 Gilman St, Berkeley, CA 94710',
+        phone: '(510) 809-8293',
+        time: '08:00-22:00',
+        location: [37.880569, -122.297177],
+      },
+    ],
+  },
+];
+
+export default function GrocerySelection({
+  show,
+  selectedIngredients,
+}: GrocerySelectionProp) {
   const [activeMarker, setActiveMarker] = useState<string>('');
   const [selectedPlan, setSelectedPlan] = useState<string>('');
-  const [plans, setPlans] = useState<Plan[]>([
-    {
-      stores: [
-        {
-          brand: 'Whole Food',
-          address: '5110 Telegraph Ave, Oakland, CA 94609',
-          phone: '(510) 903-2222',
-          time: '08:00-21:00',
-          location: [37.837657, -122.262078],
-        },
-        {
-          brand: "Trader Joe's",
-          address: '5700 Christie Ave, Emeryville, CA 94608',
-          phone: '(510) 658-8091',
-          time: '08:00-21:00',
-          location: [37.837047, -122.293903],
-        },
-        {
-          brand: 'Safeway',
-          address: '6310 College Ave, Oakland, CA 94618',
-          phone: '(510) 985-0012',
-          time: '05:00-24:00',
-          location: [37.85073, -122.252364],
-        },
-      ],
-      travelCost: 3,
-      travelTime: 15,
-      travelDistance: 3,
-      groceryCost: 30,
-    },
-    {
-      travelCost: 2,
-      travelTime: 20,
-      travelDistance: 3,
-      groceryCost: 60,
-      stores: [
-        {
-          brand: "Trader Joe's",
-          address: '5727 College Ave, Oakland, CA 94618',
-          phone: '(510) 923-9428',
-          time: '08:00-21:00',
-          location: [37.845923, -122.252565],
-        },
-        {
-          brand: 'Whole Food',
-          address: '1025 Gilman St, Berkeley, CA 94710',
-          phone: '(510) 809-8293',
-          time: '08:00-22:00',
-          location: [37.880569, -122.297177],
-        },
-        {
-          brand: 'Safeway',
-          address: '1550 Shattuck Ave., Berkeley, CA 94709',
-          phone: '(510) 841-7942',
-          time: '06:00-23:00',
-          location: [37.878793, -122.269677],
-        },
-      ],
-    },
-    {
-      travelCost: 1,
-      travelTime: 2,
-      travelDistance: 1,
-      groceryCost: 30,
-      stores: [
-        {
-          brand: 'Safeway',
-          address: '1444 Shattuck Place, Berkeley, CA 94709',
-          phone: '(510) 526-3086',
-          time: '05:00-24:00',
-          location: [37.880819, -122.269725],
-        },
-        {
-          brand: "Trader Joe's",
-          address: '5727 College Ave, Oakland, CA 94618',
-          phone: '(510) 923-9428',
-          time: '08:00-21:00',
-          location: [37.845923, -122.252565],
-        },
-        {
-          brand: 'Whole Food',
-          address: '1025 Gilman St, Berkeley, CA 94710',
-          phone: '(510) 809-8293',
-          time: '08:00-22:00',
-          location: [37.880569, -122.297177],
-        },
-      ],
-    },
-    {
-      travelCost: 1,
-      travelTime: 2,
-      travelDistance: 1,
-      groceryCost: 30,
-      stores: [
-        {
-          brand: "Trader Joe's",
-          address: '5727 College Ave, Oakland, CA 94618',
-          phone: '(510) 923-9428',
-          time: '08:00-21:00',
-          location: [37.845923, -122.252565],
-        },
-        {
-          brand: 'Safeway',
-          address: '1444 Shattuck Place, Berkeley, CA 94709',
-          phone: '(510) 526-3086',
-          time: '05:00-24:00',
-          location: [37.880819, -122.269725],
-        },
-        {
-          brand: 'Whole Food',
-          address: '1025 Gilman St, Berkeley, CA 94710',
-          phone: '(510) 809-8293',
-          time: '08:00-22:00',
-          location: [37.880569, -122.297177],
-        },
-      ],
-    },
-  ]);
+  const [modalShow, setModelShow] = useState<boolean>(false);
+
+  const [plans, setPlans] = useState<Plan[]>(defaultPlans);
+  const [plan, setPlan] = useState<Plan>(plans[0]);
 
   useEffect(() => {
     const _stores: {
@@ -203,47 +221,15 @@ export default function GrocerySelection({ show }: GrocerySelectionProp) {
         });
       });
     });
-    // stores['Whole Food'].forEach((wf) => {
-    //   stores["Trader Joe's"].forEach((tj) => {
-    //     stores['Safeway'].forEach((sw) => {
-    //       const places = [wf, tj, sw];
-    //       places.forEach((p1) => {
-    //         places.forEach((p2) => {
-    //           fetch(
-    //             'https://api.openrouteservice.org/v2/directions/driving-car',
-    //           );
-    //         });
-    //       });
-    //     });
-    //   });
-    // });
-
-    // try {
-    //   if (Object.keys(directions).length > 0) {
-    //     return;
-    //   }
-    //   const d: {[k: string]: Path} = {}
-    //   getDirections(CURRENT_LOCATION, ..._stores.map(d => d.location))
-    //     .then(v => v.json())
-    //     .then((geojsons: GeoJSON[]) => {
-    //       geojsons.map((geojson, i) => {
-    //         d[_stores[i].name + '_' + _stores[i].address] = {
-    //           end: _stores[i].location,
-    //           path: geojson,
-    //         };
-    //       })
-    //       setDirections(d);
-    //     })
-    //     .catch(err => console.log(err));
-    // } catch (e) {
-    //   console.error(e)
-    // }
   }, []);
 
-  // useEffect(() => {
-  //   console.log(directions);
-  //   console.log(JSON.stringify(directions));
-  // }, [directions]);
+  useEffect(() => {
+    setPlan(
+      plans.filter(p =>
+        selectedPlan.split('_').every((a, i) => a === p.stores[i].address),
+      )[0],
+    );
+  }, [selectedPlan]);
 
   return (
     <>
@@ -284,7 +270,10 @@ export default function GrocerySelection({ show }: GrocerySelectionProp) {
                     ))
                     .map((c, i) => {
                       return (
-                        <div key={`img-plan${idx}-${i}-with-caret`}>
+                        <div
+                          key={`img-plan${idx}-${i}-with-caret`}
+                          className='d-flex align-items-center'
+                        >
                           {c}
                           {i < plan.stores.length - 1 ? (
                             <div>
@@ -313,6 +302,94 @@ export default function GrocerySelection({ show }: GrocerySelectionProp) {
               </>
             </ToggleButton>
           ))}
+        </div>
+        <div className='px-3' style={{ fontSize: 30 }}>
+          <FontAwesomeIcon
+            icon={faCircleInfo}
+            style={{ cursor: 'pointer' }}
+            onClick={() => selectedPlan !== '' && setModelShow(true)}
+          />
+          <Modal show={modalShow} onHide={() => setModelShow(false)}>
+            <Modal.Header closeButton>
+              <Modal.Title>Grocery Plan</Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
+              <div className='d-flex flex-column align-items-center'>
+                <h1
+                  style={{
+                    fontSize: 80,
+                    fontWeight: 'bolder',
+                    lineHeight: '100%',
+                  }}
+                >
+                  <span style={{ color: 'grey' }}>$</span>
+                  {plan && plan.groceryCost + plan.travelCost}
+                </h1>
+                <div>
+                  {plan && plan.travelDistance} Miles |{' '}
+                  {plan && plan.travelTime} Minutes
+                </div>
+                <hr
+                  style={{
+                    height: 2,
+                    color: 'grey',
+                    width: '90%',
+                  }}
+                />
+                {plan ? (
+                  plan.stores.map((s, i) => (
+                    <div
+                      key={`modal-${i}-${s.brand}`}
+                      className='d-flex flex-column align-items-center'
+                    >
+                      <div style={{ fontSize: 40, color: 'grey' }}>
+                        <FontAwesomeIcon icon={faArrowDown} />
+                      </div>
+                      <Card style={{ width: '90%' }}>
+                        <Card.Body className='d-flex flex-column align-items-center'>
+                          {/* <Card.Title>Card Title</Card.Title>
+                          <Card.Subtitle className='mb-2 text-muted'>
+                            Card Subtitle
+                          </Card.Subtitle> */}
+                          <Image
+                            className='m-1'
+                            width={100}
+                            height={100}
+                            src={ICONS[s.brand]}
+                          ></Image>
+                          <Card.Text>
+                            {selectedIngredients
+                              .map(([ing, ingData]) => [ing, ...ingData])
+                              .filter(ing => ing[5] === s.brand)
+                              .map(([_store, ingredientData]) => (
+                                <>
+                                  {_store} {JSON.stringify(ingredientData)}
+                                </>
+                              ))}
+                          </Card.Text>
+                          <Button
+                            variant='primary'
+                            href='https://chanwutk.github.io'
+                          >
+                            Navigate
+                          </Button>
+                          {/* <Card.Link href='#'>Card Link</Card.Link>
+                          <Card.Link href='#'>Another Link</Card.Link> */}
+                        </Card.Body>
+                      </Card>
+                    </div>
+                  ))
+                ) : (
+                  <></>
+                )}
+              </div>
+            </Modal.Body>
+            <Modal.Footer>
+              <Button variant='secondary' onClick={() => setModelShow(false)}>
+                Close
+              </Button>
+            </Modal.Footer>
+          </Modal>
         </div>
       </Container>
       <MapContainer

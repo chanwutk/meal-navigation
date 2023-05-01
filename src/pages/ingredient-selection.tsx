@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { meals } from '../data/meals';
 import { ingredient } from '../data/ingredients';
 import { Card, Form, ListGroup, Image } from 'react-bootstrap';
@@ -6,42 +6,25 @@ import { ICONS } from './grocery-selection';
 
 interface IngredientSelectionProp {
   selectedMeals: { [key: string]: string };
-  //Make it global
-  selectedBrands: number[];
-  setSelectedBrands: React.Dispatch<React.SetStateAction<number[]>>;
+  setSelectedIngredients: (d: [string, IngredientData][]) => void;
 }
 
-type IngredientData = [string, string, number, number, string, string, number];
+export type IngredientData = [
+  string,
+  string,
+  number,
+  number,
+  string,
+  string,
+  number,
+];
 
 export default function IngredientSelection({
   selectedMeals,
-  selectedBrands,
-  setSelectedBrands,
+  setSelectedIngredients,
 }: IngredientSelectionProp) {
-  const daysOfWeek = [
-    'Monday',
-    'Tuesday',
-    'Wednesday',
-    'Thursday',
-    'Friday',
-    'Saturday',
-    'Sunday',
-  ];
-  // const mondayMeal = selectedMeals['Monday'].substring(0, selectedMeals['Monday'].indexOf("-"));
-  // const tuesdayMeal = selectedMeals['Tuesday'].substring(0, selectedMeals['Tuesday'].indexOf("-"));
-  // const wednesdayMeal = selectedMeals['Wednesday'].substring(0, selectedMeals['Wednesday'].indexOf("-"));
-  // const thursdayMeal = selectedMeals['Thursday'].substring(0, selectedMeals['Thursday'].indexOf("-"));
-  // const fridayMeal = selectedMeals['Friday'].substring(0, selectedMeals['Friday'].indexOf("-"));
-  // const saturdayMeal = selectedMeals['Saturday'].substring(0, selectedMeals['Saturday'].indexOf("-"));
-  // const sundayMeal = selectedMeals['Sunday'].substring(0, selectedMeals['Sunday'].indexOf("-"));
+  const [selectedBrands, setSelectedBrands] = useState<number[]>([]);
 
-  // let mondayMeal = selectedMeals['Monday'].split("-")[0];
-  // let tuesdayMeal = selectedMeals['Tuesday'].split("-")[0];
-  // let wednesdayMeal = selectedMeals['Wednesday'].split("-")[0];
-  // let thursdayMeal = selectedMeals['Thursday'].split("-")[0];
-  // let fridayMeal = selectedMeals['Friday'].split("-")[0];
-  // let saturdayMeal = selectedMeals['Saturday'].split("-")[0];
-  // let sundayMeal = selectedMeals['Sunday'].split("-")[0];
   let mondayMeal: string = selectedMeals['Monday'];
   if (mondayMeal !== undefined) {
     mondayMeal = mondayMeal.split('-')[0];
@@ -175,31 +158,34 @@ export default function IngredientSelection({
         id,
       ];
       id = id + 1;
-      if (info[1] == info[4]) {
-        info[1] = 'Store Brand';
-      }
+      // if (info[1] == info[4]) {
+      //   info[1] = 'Store Brand';
+      // }
       data_map.get(i)?.push(info);
     }
   }
 
+  useEffect(() => {
+    const brands = new Set(selectedBrands);
+    setSelectedIngredients(
+      [...data_map].flatMap(([ingredient, ingredientBrands]) =>
+        ingredientBrands
+          .filter(([_n, _b, _o, _d, _s, _u, id]) => brands.has(id))
+          .map(d => [ingredient, d]),
+      ),
+    );
+  }, [selectedBrands]);
+
   return (
     <>
-      {/*<div>*/}
-      {/*  <h2>Selected meals:</h2>*/}
-      {/*  <ul>*/}
-      {/*    <li>Ingredient: {ingr_arr.join(", ")}</li>*/}
-      {/*  </ul>*/}
-      {/*</div>*/}
-
       {Array.from(data_map.entries()).map(([ingredients, items]) => (
-        <Card
-          key={ingredients}
-          // style={{ width: '50rem' }}
-          text='white'
-          className='mb-2'
-          bg='dark'
-        >
-          <Card.Header>{ingredients}</Card.Header>
+        <Card key={ingredients} text='white' className='mb-2' bg='dark'>
+          <Card.Header>
+            <h1>
+              {ingredients[0].toUpperCase()}
+              {ingredients.slice(1)}
+            </h1>
+          </Card.Header>
           <Card.Body>
             <ListGroup className='list-group-flush'>
               {items.map(
@@ -212,30 +198,27 @@ export default function IngredientSelection({
                   unit,
                   id,
                 ]) => (
-                  // <ListGroup.Item key={id}>
-                  //   {itemName} | {itemStore} | Original Price: ${itemOPrice} | Discount Price: ${itemDPrice} per {unit}
-                  // </ListGroup.Item>
                   <Form.Check
-                    className="m-1"
+                    className='m-1'
                     key={`${itemName}-${itemBrand}`}
                     type='checkbox'
                     label={
-                      <div className="d-flex flex-row align-items-center">
+                      <div className='d-flex flex-row align-items-center'>
                         <Image
                           src={ICONS[itemStore]}
                           width={40}
                           height={40}
                         ></Image>{' '}
-                        <div className="d-flex flex-column justify-content-center mx-2">
-                        {itemName}
-                        <div>
-                        <s style={{color: 'grey'}}>
-                          {'$'}
-                          {itemOPrice}
-                        </s>{' '}
-                        {'$'}
-                        {itemDPrice} {`per ${unit}`}
-                        </div>
+                        <div className='d-flex flex-column justify-content-center mx-2'>
+                          {itemName}
+                          <div>
+                            <s style={{ color: 'grey' }}>
+                              {itemOPrice !== itemDPrice
+                                ? '$' + itemOPrice
+                                : ''}
+                            </s>
+                            {` $${itemDPrice} / ${unit}`}
+                          </div>
                         </div>
                       </div>
                     }
