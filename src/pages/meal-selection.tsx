@@ -1,8 +1,16 @@
-import React from 'react';
+import React, { useState, useMemo } from 'react';
+import { Carousel } from 'react-bootstrap';
 import { Preferences } from '../data/preferences';
 import { meals } from '../data/meals';
 import validatePreferences from '../utils/validate-preferences';
 import parseConstraints from '../utils/parse-constraints';
+import { useRef } from 'react';
+
+declare module 'react-bootstrap' {
+  interface CarouselItemProps {
+    onSlid?: (event: any) => void;
+  }
+}
 
 interface MealSelectionProp {
   preferences: Preferences;
@@ -38,7 +46,7 @@ const randomLists: string[][] = [];
 for (let i = 0; i < 7; i++) {
   randomLists.push(getRandomItems(allfoods, 5));
 }
-// console.log(randomLists);
+console.log(randomLists);
 
 const menuOptions: MenuOption[] = [
   { id: 1, name: 'Colcannon Potatoes' },
@@ -62,63 +70,69 @@ export default function MealSelection({
     'Saturday',
     'Sunday',
   ];
-  // const [selectedMeals, setSelectedMeals] = useState<{[key: string]: string}>({});
+  const defaultSelectedMeals = useMemo(() => {
+    const selectedMeals: Record<string, string> = {};
+    for (const day of daysOfWeek) {
+      selectedMeals[day] = randomLists[daysOfWeek.indexOf(day)][0];
+    }
+    return selectedMeals;
+  }, [daysOfWeek]);
 
-  const handleMealSelection = (
-    event: React.ChangeEvent<HTMLSelectElement>,
-    day: string,
-  ) => {
-    setSelectedMeals({ ...selectedMeals, [day]: event.target.value });
-    console.log(selectedMeals);
+  const [currentSelectedMeals, setCurrentSelectedMeals] = useState(defaultSelectedMeals);
+  
+  const handleSelect = (day: string, meal: string, selectedIndex: number) => {
+    setSelectedMeals(prevSelectedMeals => {
+      const updatedSelectedMeals = {
+        ...prevSelectedMeals,
+        [day]: randomLists[daysOfWeek.indexOf(day)][selectedIndex]
+      };
+      console.log("Updated selected meals:", updatedSelectedMeals);
+      return updatedSelectedMeals;
+    });
   };
 
   return (
     <>
-      <div>
-        <div style={{ textAlign: 'center' }}>
-          <h1>Select meals for the week:</h1>
-        </div>
-        <div
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            flexWrap: 'wrap',
-            flexDirection: 'column',
-          }}
-        >
-          {daysOfWeek.map((day: string, index: number) => (
-            <div
-              key={day}
-              style={{ alignItems: 'center', marginBottom: '1em' }}
+{daysOfWeek.map((day: string, index: number) => (
+      <div key={day}>
+        <h1 style={{ textAlign: 'center' }}>{day}</h1>
+        <Carousel defaultActiveIndex={0} interval={null} 
+        activeIndex={randomLists[daysOfWeek.indexOf(day)].indexOf(currentSelectedMeals[day])} 
+        onSelect={(selectedIndex) => {
+          setCurrentSelectedMeals(prevSelectedMeals => ({
+            ...prevSelectedMeals,
+            [day]: randomLists[daysOfWeek.indexOf(day)][selectedIndex]
+          }));
+          handleSelect(day, randomLists[daysOfWeek.indexOf(day)][selectedIndex], selectedIndex);
+        }} >
+          {randomLists[index]
+          .filter(f =>
+            validatePreferences(
+              preferences,
+              parseConstraints(
+                meals.find(m => m.name === f)?.constraints,
+              ),
+            ),
+          ).map((food) => (
+            <Carousel.Item
+              key={`${food}-${day}`}
             >
-              <div style={{ display: 'inline-block', marginRight: '1em' }}>
-                <h3 style={{ display: 'inline-block' }}>{day}</h3>
-                <select
-                  style={{ display: 'inline-block' }}
-                  value={selectedMeals[day]}
-                  onChange={event => handleMealSelection(event, day)}
-                >
-                  <option value=''>Select a meal...</option>
-                  {randomLists[index]
-                    .filter(f =>
-                      validatePreferences(
-                        preferences,
-                        parseConstraints(
-                          meals.find(m => m.name === f)?.constraints,
-                        ),
-                      ),
-                    )
-                    .map(food => (
-                      <option key={`${food}-${day}`} value={`${food}`}>
-                        {food}
-                      </option>
-                    ))}
-                </select>
-              </div>
-            </div>
+              <img
+                className="d-block w-100"
+                // src={`https://source.unsplash.com/800x400/?${food}`}
+                src={`src/data/pictures/${food}.jpeg`}
+                alt={`${food} image`}
+                width="auto"
+                height="auto"
+              />
+              <Carousel.Caption>
+                <h4>{food}</h4>
+              </Carousel.Caption>
+            </Carousel.Item>
           ))}
-        </div>
+        </Carousel>
       </div>
+    ))}
       <button hidden={true}>Next</button>
     </>
   );
