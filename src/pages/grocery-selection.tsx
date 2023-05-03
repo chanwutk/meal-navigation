@@ -17,22 +17,18 @@ import {
   ToggleButton,
   Image,
   Container,
-  Modal,
-  Button,
-  Card,
+  Dropdown,
+  DropdownButton,
 } from 'react-bootstrap';
 import { Store } from '../types';
-import {
-  faArrowDown,
-  faCaretRight,
-  faCircleInfo,
-} from '@fortawesome/free-solid-svg-icons';
+import { faCaretRight, faCircleInfo } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { IngredientData } from './ingredient-selection';
+import Receipt from '../components/receipt';
 
 const CURRENT_LOCATION: LatLngTuple = [37.87607, -122.258502];
 
-interface Plan {
+export interface Plan {
   stores: Store[];
   travelCost: number;
   groceryCost: number;
@@ -199,7 +195,7 @@ export default function GrocerySelection({
 }: GrocerySelectionProp) {
   const [activeMarker, setActiveMarker] = useState<string>('');
   const [selectedPlan, setSelectedPlan] = useState<string>('');
-  const [modalShow, setModelShow] = useState<boolean>(false);
+  const [modalShow, setModalShow] = useState<boolean>(false);
 
   const [plans, setPlans] = useState<Plan[]>(defaultPlans);
   const [plan, setPlan] = useState<Plan>(plans[0]);
@@ -233,197 +229,50 @@ export default function GrocerySelection({
 
   return (
     <>
+      <Receipt
+        modalShow={modalShow}
+        setModalShow={setModalShow}
+        plan={plan}
+        selectedIngredients={selectedIngredients}
+      />
       <Container>
         <div
-          className='p-1 plan-panel'
-          style={{ overflow: 'scroll', whiteSpace: 'nowrap' }}
+          className='p-3 d-flex justify-content-between align-items-center'
+          style={{ width: '100%' }}
         >
-          {plans.map((plan, idx) => (
-            <ToggleButton
-              key={`plan-key-${idx}`}
-              id={`plan-id-${idx}`}
-              type='radio'
-              variant='outline-dark'
-              value={plan.stores.map(s => s.address).join('_')}
-              checked={
-                selectedPlan === plan.stores.map(s => s.address).join('_')
-              }
-              onChange={e => setSelectedPlan(e.currentTarget.value)}
-              className='m-2'
-              style={
-                selectedPlan === plan.stores.map(s => s.address).join('_')
-                  ? {}
-                  : { backgroundColor: 'white' }
-              }
-            >
-              <>
-                <div className='d-flex flex-row justify-content-center align-items-center'>
-                  {plan.stores
-                    .map((s, i) => (
-                      <Image
-                        key={`img-plan${idx}-${i}-${s.brand}`}
-                        className='m-1'
-                        width={30}
-                        height={30}
-                        src={ICONS[s.brand]}
-                      ></Image>
-                    ))
-                    .map((c, i) => {
-                      return (
-                        <div
-                          key={`img-plan${idx}-${i}-with-caret`}
-                          className='d-flex align-items-center'
-                        >
-                          {c}
-                          {i < plan.stores.length - 1 ? (
-                            <div>
-                              <FontAwesomeIcon icon={faCaretRight} size='2xs' />
-                            </div>
-                          ) : (
-                            <></>
-                          )}
-                        </div>
-                      );
-                    })}
-                </div>
-                <div className='d-flex flex-row justify-content-between align-items-center'>
-                  <div style={{ fontWeight: 'bolder', fontSize: 40 }}>
-                    ${plan.travelCost + plan.groceryCost}
-                  </div>
-                  <div className='d-flex flex-column align-items-start m-2'>
-                    <div style={{ lineHeight: '100%' }}>
-                      {plan.travelDistance} mi.
-                    </div>
-                    <div style={{ lineHeight: '100%' }}>
-                      {plan.travelTime} min.
-                    </div>
-                  </div>
-                </div>
-              </>
-            </ToggleButton>
-          ))}
-        </div>
-        <div className='px-3' style={{ fontSize: 30 }}>
-          <FontAwesomeIcon
-            icon={faCircleInfo}
-            style={{ cursor: 'pointer' }}
-            onClick={() => selectedPlan !== '' && setModelShow(true)}
-          />
-          <Modal show={modalShow} onHide={() => setModelShow(false)}>
-            <Modal.Header closeButton>
-              <Modal.Title>Grocery Plan</Modal.Title>
-            </Modal.Header>
-            <Modal.Body>
-              <div className='d-flex flex-column align-items-center'>
-                <h1
-                  style={{
-                    fontSize: 80,
-                    fontWeight: 'bolder',
-                    lineHeight: '100%',
-                  }}
-                >
-                  <span style={{ color: 'grey' }}>$</span>
-                  {plan && plan.groceryCost + plan.travelCost}
-                </h1>
-                <div className='mb-2'>
-                  {plan && plan.travelDistance} Miles |{' '}
-                  {plan && plan.travelTime} Minutes
-                </div>
-                <hr
-                  style={{
-                    height: 2,
-                    color: 'grey',
-                    width: '90%',
-                  }}
-                />
-                {plan ? (
-                  plan.stores.map((s, i) => (
-                    <div
-                      key={`modal-${i}-${s.brand}`}
-                      style={{ width: '90%' }}
-                      className='d-flex flex-column align-items-center'
-                    >
-                      <div style={{ fontSize: 40, color: 'grey' }}>
-                        <FontAwesomeIcon icon={faArrowDown} />
-                      </div>
-                      <Card style={{ width: '90%' }}>
-                        <Card.Body className='d-flex flex-column align-items-center'>
-                          {/* <Card.Title>Card Title</Card.Title>
-                          <Card.Subtitle className='mb-2 text-muted'>
-                            Card Subtitle
-                          </Card.Subtitle> */}
-                          <Image
-                            className='m-1'
-                            width={100}
-                            height={100}
-                            src={ICONS[s.brand]}
-                          ></Image>
-                          <Card.Text style={{ width: '90%' }}>
-                            {selectedIngredients
-                              .sort(
-                                (ing1, ing2) =>
-                                  ing2.ingredientData[3] -
-                                  ing1.ingredientData[3],
-                              )
-                              // .filter((ingredient, idx, ingredientArray) => idx === ingredientArray.map(d => d).filter(d => true)[0])
-                              .filter(
-                                (ing, i, ings) =>
-                                  i ===
-                                  ings
-                                    .map((ing2, i2) => ({ ing2, i2 }))
-                                    .filter(
-                                      ing2 =>
-                                        ing2.ing2.ingredient === ing.ingredient,
-                                    )
-                                    .map(ing2i2 => ing2i2.i2)[0],
-                              )
-                              .filter(ing => ing.ingredientData[4] === s.brand)
-                              .map(({ ingredient, ingredientData }) => (
-                                <div
-                                  className='d-flex flex-row justify-content-between'
-                                  style={{ width: '100%' }}
-                                >
-                                  {/* {ingredient} {JSON.stringify(ingredientData)} */}
-                                  <div className='d-flex flex-column align-items-begin'>
-                                    <div>{ingredient}</div>
-                                    <div style={{ fontSize: 10 }}>
-                                      {ingredientData[0]}
-                                    </div>
-                                  </div>
-                                  <div className='d-flex flex-column align-items-begin'>
-                                    <div>{ingredientData[3]}</div>
-                                    {/* <div style={{ fontSize: 10 }}>i</div> */}
-                                  </div>
-                                </div>
-                              ))}
-                          </Card.Text>
-                        </Card.Body>
-                      </Card>
-                    </div>
-                  ))
-                ) : (
-                  <></>
-                )}
-              </div>
-            </Modal.Body>
-            <Modal.Footer>
-              <Button
-                variant='primary'
-                href={
-                  'https://www.google.com/maps/dir/' +
-                  (plan &&
-                    plan.stores
-                      .map(ss => ss.address.split(' ').join('+'))
-                      .join('/'))
+          <DropdownButton
+            id='dropdown-basic-button'
+            title='Select Grocery Plan'
+            autoClose='outside'
+            onSelect={key => key && setSelectedPlan(key)}
+          >
+            {plans.map((plan, idx) => (
+              <Dropdown.Item
+                key={`plan-key-${idx}`}
+                id={`plan-id-${idx}`}
+                type='radio'
+                variant='outline-dark'
+                eventKey={plan.stores.map(s => s.address).join('_')}
+                style={
+                  selectedPlan === plan.stores.map(s => s.address).join('_')
+                    ? { backgroundColor: 'lightgray' }
+                    : {}
                 }
               >
-                Navigate
-              </Button>
-              <Button variant='secondary' onClick={() => setModelShow(false)}>
-                Close
-              </Button>
-            </Modal.Footer>
-          </Modal>
+                <div className='d-flex flex-row justify-content-between'>
+                  <DropdownCost plan={plan} />
+                  <StoreOrder stores={plan.stores} />
+                </div>
+              </Dropdown.Item>
+            ))}
+          </DropdownButton>
+          <div style={{ fontSize: 30 }}>
+            <FontAwesomeIcon
+              icon={faCircleInfo}
+              style={{ cursor: 'pointer' }}
+              onClick={() => selectedPlan !== '' && setModalShow(true)}
+            />
+          </div>
         </div>
       </Container>
       <MapContainer
@@ -487,5 +336,45 @@ export default function GrocerySelection({
         ))}
       </MapContainer>
     </>
+  );
+}
+
+function DropdownCost({ plan }: { plan: Plan }) {
+  return (
+    <div className='d-flex flex-row justify-content-between align-items-center'>
+      <div style={{ fontWeight: 'bolder', fontSize: 40 }}>
+        ${plan.travelCost + plan.groceryCost}
+      </div>
+      <div className='d-flex flex-column align-items-start m-2'>
+        <div style={{ lineHeight: '100%' }}>{plan.travelDistance} mi.</div>
+        <div style={{ lineHeight: '100%' }}>{plan.travelTime} min.</div>
+      </div>
+    </div>
+  );
+}
+
+function StoreOrder({ stores }: { stores: Store[] }) {
+  function brandLogo(store: Store, idx: number) {
+    return (
+      <div
+        key={`img-plan-${idx}-with-caret`}
+        className='d-flex align-items-center'
+      >
+        {idx ? <FontAwesomeIcon icon={faCaretRight} size='2xs' /> : ''}
+        <Image
+          key={`img-plan-${idx}-${store.brand}`}
+          className='m-1'
+          width={30}
+          height={30}
+          src={ICONS[store.brand]}
+        ></Image>
+      </div>
+    );
+  }
+
+  return (
+    <div className='d-flex flex-row justify-content-center align-items-center'>
+      {stores.map(brandLogo)}
+    </div>
   );
 }

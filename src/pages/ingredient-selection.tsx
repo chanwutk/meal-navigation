@@ -11,15 +11,15 @@ interface IngredientSelectionProp {
   ) => void;
 }
 
-export type IngredientData = [
-  string,
-  string,
-  number,
-  number,
-  string,
-  string,
-  number,
-];
+export type IngredientData = {
+  name: string;
+  brand: string;
+  original_price: number;
+  discount_price: number;
+  store: string;
+  unit: string;
+  id: number;
+};
 
 export default function IngredientSelection({
   selectedMeals,
@@ -150,15 +150,7 @@ export default function IngredientSelection({
     data_map.set(i, []);
     const unit = ingredient[i]['unit'];
     for (const n of ingredient[i]['product']) {
-      const info: IngredientData = [
-        n.name,
-        n.brand,
-        n.original_price,
-        n.discount_price,
-        n.store,
-        unit,
-        id,
-      ];
+      const info: IngredientData = { ...n, unit, id };
       id = id + 1;
       // if (info[1] == info[4]) {
       //   info[1] = 'Store Brand';
@@ -172,7 +164,7 @@ export default function IngredientSelection({
     setSelectedIngredients(
       [...data_map].flatMap(([ingredient, ingredientBrands]) =>
         ingredientBrands
-          .filter(([_n, _b, _o, _d, _s, _u, id]) => brands.has(id))
+          .filter(({ id }) => brands.has(id))
           .map(d => ({ ingredient, ingredientData: d })),
       ),
     );
@@ -191,35 +183,35 @@ export default function IngredientSelection({
           <Card.Body>
             <ListGroup className='list-group-flush'>
               {items.map(
-                ([
-                  itemName,
-                  itemBrand,
-                  itemOPrice,
-                  itemDPrice,
-                  itemStore,
+                ({
+                  name,
+                  brand,
+                  original_price,
+                  discount_price,
+                  store,
                   unit,
                   id,
-                ]) => (
+                }) => (
                   <Form.Check
                     className='m-1'
-                    key={`${itemName}-${itemBrand}`}
+                    key={`${name}-${brand}`}
                     type='checkbox'
                     label={
                       <div className='d-flex flex-row align-items-center'>
                         <Image
-                          src={ICONS[itemStore]}
+                          src={ICONS[store]}
                           width={40}
                           height={40}
                         ></Image>{' '}
                         <div className='d-flex flex-column justify-content-center mx-2'>
-                          {itemName}
+                          {name}
                           <div>
                             <s style={{ color: 'grey' }}>
-                              {itemOPrice !== itemDPrice
-                                ? '$' + itemOPrice
+                              {original_price !== discount_price
+                                ? '$' + original_price
                                 : ''}
                             </s>
-                            {` $${itemDPrice} / ${unit}`}
+                            {` $${discount_price} / ${unit}`}
                           </div>
                         </div>
                       </div>
