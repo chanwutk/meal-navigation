@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { Carousel } from 'react-bootstrap';
 import { Preferences } from '../data/preferences';
 import { meals } from '../data/meals';
@@ -13,7 +13,6 @@ declare module 'react-bootstrap' {
 
 interface MealSelectionProp {
   preferences: Preferences;
-  selectedMeals: { [key: string]: string };
   setSelectedMeals: React.Dispatch<
     React.SetStateAction<{ [key: string]: string }>
   >;
@@ -56,7 +55,6 @@ const menuOptions: MenuOption[] = [
 
 export default function MealSelection({
   preferences,
-  selectedMeals,
   setSelectedMeals,
 }: MealSelectionProp) {
   const daysOfWeek = [
@@ -68,10 +66,11 @@ export default function MealSelection({
     'Saturday',
     'Sunday',
   ];
+  const [availableMeals, setAvailableMeals] = useState<string[][]>(randomLists);
   const defaultSelectedMeals = useMemo(() => {
-    const selectedMeals: Record<string, string> = {};
+    const selectedMeals: Record<string, number> = {};
     for (const day of daysOfWeek) {
-      selectedMeals[day] = randomLists[daysOfWeek.indexOf(day)][0];
+      selectedMeals[day] = 0;
     }
     return selectedMeals;
   }, [daysOfWeek]);
@@ -79,16 +78,33 @@ export default function MealSelection({
   const [currentSelectedMeals, setCurrentSelectedMeals] =
     useState(defaultSelectedMeals);
 
-  const handleSelect = (day: string, meal: string, selectedIndex: number) => {
+  useEffect(() => {
+    setAvailableMeals(
+      randomLists.map(rl =>
+        rl.filter(f =>
+          validatePreferences(
+            preferences,
+            parseConstraints(meals.find(m => m.name === f)?.constraints),
+          ),
+        ),
+      ),
+    );
+  }, [preferences]);
+
+  useEffect(() => {
     setSelectedMeals(prevSelectedMeals => {
-      const updatedSelectedMeals = {
-        ...prevSelectedMeals,
-        [day]: randomLists[daysOfWeek.indexOf(day)][selectedIndex],
-      };
-      console.log('Updated selected meals:', updatedSelectedMeals);
-      return updatedSelectedMeals;
+      const _selectedMeals = Object.assign(
+        {},
+        prevSelectedMeals,
+        ...availableMeals.map((day, idx) => ({
+          [daysOfWeek[idx]]: day[currentSelectedMeals[daysOfWeek[idx]]],
+        })),
+      );
+      console.log(currentSelectedMeals);
+      console.log('Updated selected meals:', _selectedMeals);
+      return _selectedMeals;
     });
-  };
+  }, [preferences, currentSelectedMeals]);
 
   return (
     <>
@@ -98,43 +114,33 @@ export default function MealSelection({
           <Carousel
             defaultActiveIndex={0}
             interval={null}
-            activeIndex={randomLists[daysOfWeek.indexOf(day)].indexOf(
-              currentSelectedMeals[day],
-            )}
+            activeIndex={
+              currentSelectedMeals[day] < availableMeals[index].length
+                ? currentSelectedMeals[day]
+                : 0
+            }
             onSelect={selectedIndex => {
               setCurrentSelectedMeals(prevSelectedMeals => ({
                 ...prevSelectedMeals,
-                [day]: randomLists[daysOfWeek.indexOf(day)][selectedIndex],
+                [day]: selectedIndex,
               }));
-              handleSelect(
-                day,
-                randomLists[daysOfWeek.indexOf(day)][selectedIndex],
-                selectedIndex,
-              );
             }}
           >
-            {randomLists[index]
-              .filter(f =>
-                validatePreferences(
-                  preferences,
-                  parseConstraints(meals.find(m => m.name === f)?.constraints),
-                ),
-              )
-              .map(food => (
-                <Carousel.Item key={`${food}-${day}`}>
-                  <img
-                    className='d-block w-100'
-                    // src={`https://source.unsplash.com/800x400/?${food}`}
-                    src={`./foods/${food}.jpeg`}
-                    alt={`${food} image`}
-                    width='auto'
-                    height='auto'
-                  />
-                  <Carousel.Caption>
-                    <h4>{food}</h4>
-                  </Carousel.Caption>
-                </Carousel.Item>
-              ))}
+            {availableMeals[index].map(food => (
+              <Carousel.Item key={`${food}-${day}`}>
+                <img
+                  className='d-block w-100'
+                  // src={`https://source.unsplash.com/800x400/?${food}`}
+                  src={`./foods/${food}.jpeg`}
+                  alt={`${food} image`}
+                  width='auto'
+                  height='auto'
+                />
+                <Carousel.Caption>
+                  <h4>{food}</h4>
+                </Carousel.Caption>
+              </Carousel.Item>
+            ))}
           </Carousel>
         </div>
       ))}

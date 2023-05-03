@@ -194,7 +194,7 @@ export default function IngredientSelection({
                 }) => (
                   <Form.Check
                     className='m-1'
-                    key={`${name}-${brand}`}
+                    key={`${name}-${brand}-${store}`}
                     type='checkbox'
                     label={
                       <div className='d-flex flex-row align-items-center'>

@@ -8,41 +8,19 @@ import {
   Polyline,
 } from 'react-leaflet';
 import { useEffect, useState } from 'react';
-
-import { stores as STORES } from '../data/stores';
-import { paths } from '../data/paths';
-
+import { stores as STORES, stores } from '../data/stores';
 import 'leaflet/dist/leaflet.css';
-import { Image, Container, Dropdown, DropdownButton } from 'react-bootstrap';
-import { faCaretRight, faCircleInfo } from '@fortawesome/free-solid-svg-icons';
+import { Container, Dropdown, DropdownButton } from 'react-bootstrap';
+import { faCircleInfo } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { _Ingredient } from './ingredient-selection';
 import Receipt from '../components/receipt';
-import round2 from '../utils/round-2';
 import processPlans from '../utils/process-plans';
+import StoresOrdered from '../components/stores-ordered';
+import DropdownCost from '../components/dropdown-cost';
+import { Plan, _Store } from '../types';
 
 export const CURRENT_LOCATION: LatLngTuple = [37.87607, -122.258502];
-
-export type _Store = {
-  name: string;
-  address: string;
-  idx: number;
-};
-export type _Path = GeoJSON.FeatureCollection & {
-  metadata?: any;
-};
-export type Plan = {
-  stores: _Store[];
-  paths: _Path[];
-  distance: number;
-  duration: number;
-  groceryCost: number;
-  totalCost: number;
-  groceryList: {
-    store: _Store;
-    ingredients: _Ingredient[];
-  }[];
-};
 
 interface GrocerySelectionProp {
   show: boolean;
@@ -68,7 +46,7 @@ export default function GrocerySelection({
   show,
   selectedIngredients,
 }: GrocerySelectionProp) {
-  const [activeMarker, setActiveMarker] = useState<string>('');
+  // const [activeMarker, setActiveMarker] = useState<string>('');
   const [selectedPlan, setSelectedPlan] = useState<string>('');
   const [modalShow, setModalShow] = useState<boolean>(false);
 
@@ -95,7 +73,6 @@ export default function GrocerySelection({
   }, []);
 
   useEffect(() => {
-    console.log(selectedPlan);
     setPlan(
       plans.filter(p =>
         selectedPlan
@@ -128,7 +105,7 @@ export default function GrocerySelection({
       >
         <div className='d-flex flex-row justify-content-between'>
           <DropdownCost plan={plan} />
-          <StoreOrder stores={plan.stores} />
+          <StoresOrdered stores={plan.stores} />
         </div>
       </Dropdown.Item>
     );
@@ -181,45 +158,56 @@ export default function GrocerySelection({
             })
           }
         />
-        {Object.entries(paths)
+        {[...plans]
           .sort(
-            ([k1, _v1], [k2, _v2]) =>
-              +(k1 === activeMarker) - +(k2 === activeMarker),
+            (p1, p2) =>
+              +(planString(p1.stores) === selectedPlan) -
+              +(planString(p2.stores) === selectedPlan),
           )
-          .map(([key, value], i) => (
+          .map((plan, idx) => (
             <Polyline
-              key={'line-' + i}
-              positions={value.path.features[0].geometry.coordinates.map(
-                ([lat, lon]) => [lon, lat],
-              )}
+              key={'line-' + idx}
+              positions={plan.paths
+                .flatMap(path =>
+                  path.features.flatMap(({ geometry }) =>
+                    geometry.type === 'LineString'
+                      ? geometry.coordinates
+                      : (() => {
+                          throw new Error('should be LineString');
+                        })(),
+                  ),
+                )
+                .map(([lat, lon]) => [lon, lat])}
               pathOptions={
-                activeMarker === key
+                selectedPlan === planString(plan.stores)
                   ? { color: '#00bfff', opacity: 1, weight: 5 }
                   : { color: 'gray', opacity: 0.5, weight: 3 }
               }
             ></Polyline>
           ))}
-        {Object.entries(paths).map(([key, value], i) => (
-          <Marker
-            key={'marker-' + i}
-            position={value.end as [number, number]}
-            icon={
-              new Icon({
-                iconUrl: ICONS[key.split('_')[0]],
-                iconSize: [50, 50],
-                iconAnchor: [25, 25],
-                popupAnchor: [0, -25],
-              })
-            }
-            eventHandlers={{
-              click: () => setActiveMarker(key === activeMarker ? '' : key),
-            }}
-          >
-            <Popup closeOnClick closeOnEscapeKey>
-              <b>{key.split('_')[0]}</b>: {key.split('_')[1]}
-            </Popup>
-          </Marker>
-        ))}
+        {Object.entries(stores)
+          .flatMap(([key, values]) => values.map(v => ({ key, value: v })))
+          .map(({ key, value }, i) => (
+            <Marker
+              key={'marker-' + i}
+              position={value.location as [number, number]}
+              icon={
+                new Icon({
+                  iconUrl: ICONS[key],
+                  iconSize: [50, 50],
+                  iconAnchor: [25, 25],
+                  popupAnchor: [0, -25],
+                })
+              }
+              // eventHandlers={{
+              //   click: () => setActiveMarker(key === activeMarker ? '' : key),
+              // }}
+            >
+              <Popup closeOnClick closeOnEscapeKey>
+                <b>{key}</b>: {value.address}
+              </Popup>
+            </Marker>
+          ))}
       </MapContainer>
     </>
   );
@@ -233,44 +221,4 @@ function MapOps({ show }: { show: boolean }) {
     }
   }, [show]);
   return null;
-}
-
-function DropdownCost({ plan }: { plan: Plan }) {
-  return (
-    <div className='d-flex flex-row justify-content-between align-items-center'>
-      <div style={{ fontWeight: 'bolder', fontSize: 40 }}>
-        ${round2(plan.totalCost)}
-      </div>
-      <div className='d-flex flex-column align-items-start m-2'>
-        <div style={{ lineHeight: '100%' }}>{round2(plan.distance)} mi.</div>
-        <div style={{ lineHeight: '100%' }}>{round2(plan.duration)} min.</div>
-      </div>
-    </div>
-  );
-}
-
-function StoreOrder({ stores }: { stores: _Store[] }) {
-  function brandLogo(store: _Store, idx: number) {
-    return (
-      <div
-        key={`img-plan-${idx}-with-caret`}
-        className='d-flex align-items-center'
-      >
-        {idx ? <FontAwesomeIcon icon={faCaretRight} size='2xs' /> : ''}
-        <Image
-          key={`img-plan-${idx}-${store.name}`}
-          className='m-1'
-          width={30}
-          height={30}
-          src={ICONS[store.name]}
-        ></Image>
-      </div>
-    );
-  }
-
-  return (
-    <div className='d-flex flex-row justify-content-center align-items-center'>
-      {stores.map(brandLogo)}
-    </div>
-  );
 }

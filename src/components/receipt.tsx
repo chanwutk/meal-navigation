@@ -1,9 +1,9 @@
 import { faArrowDown } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Button, Card, Modal, Image } from 'react-bootstrap';
-import { ICONS, Plan, _Store } from '../pages/grocery-selection';
-import { IngredientData, _Ingredient } from '../pages/ingredient-selection';
-import { Store } from '../types';
+import { ICONS } from '../pages/grocery-selection';
+import { _Ingredient } from '../pages/ingredient-selection';
+import { Plan, _Store } from '../types';
 import filterIngredients from '../utils/filter-ingredients';
 import round2 from '../utils/round-2';
 
