@@ -164,6 +164,7 @@ function GoogleMapNavigation({ stores }: { stores: _Store[] }) {
       target='_blank'
       href={
         GMAP_URL +
+        'jacob+hall+berkeley/' +
         stores.map(({ address }) => address.split(' ').join('+')).join('/')
       }
     >
