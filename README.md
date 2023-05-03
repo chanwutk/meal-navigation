@@ -13,7 +13,7 @@ https://chanwutk.github.io/meal-navigation/
 npm install
 ```
 
-## Development mode
+## Development Server
 ```bash
 npm run dev
 ```
