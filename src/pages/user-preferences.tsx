@@ -37,30 +37,32 @@ export default function UserPreferences({
 
   return (
     <div className='m-3'>
-      {[...preferences.keys()].map((name, i) => (
-        <div
-          className='d-flex flex-row justify-content-between m-2'
-          key={`preference-${i}`}
-        >
-          <div>{name}</div>
-          <ButtonGroup>
-            {buttonValues.map(([text, val], idx) => (
-              <ToggleButton
-                key={`${name}-${idx}`}
-                id={`radio-${name}-${idx}`}
-                type='radio'
-                variant={getVariant(idx)}
-                name={`radio-${name}`}
-                value={val + ''}
-                checked={preferences.get(name) === val}
-                onChange={onToggle(name)}
-              >
-                {text}
-              </ToggleButton>
-            ))}
-          </ButtonGroup>
-        </div>
-      ))}
+      {[...preferences.keys()]
+        .filter(name => name !== 'Lamb' && name !== 'Cilantro')
+        .map((name, i) => (
+          <div
+            className='d-flex flex-row justify-content-between m-2'
+            key={`preference-${i}`}
+          >
+            <div>{name}</div>
+            <ButtonGroup>
+              {buttonValues.map(([text, val], idx) => (
+                <ToggleButton
+                  key={`${name}-${idx}`}
+                  id={`radio-${name}-${idx}`}
+                  type='radio'
+                  variant={getVariant(idx)}
+                  name={`radio-${name}`}
+                  value={val + ''}
+                  checked={preferences.get(name) === val}
+                  onChange={onToggle(name)}
+                >
+                  {text}
+                </ToggleButton>
+              ))}
+            </ButtonGroup>
+          </div>
+        ))}
     </div>
   );
 }
