@@ -25,6 +25,7 @@ export const CURRENT_LOCATION: LatLngTuple = [37.87607, -122.258502];
 interface GrocerySelectionProp {
   show: boolean;
   selectedIngredients: _Ingredient[];
+  selectedMeals: { [day: string]: string };
 }
 
 const TILES = {
@@ -45,6 +46,7 @@ export const ICONS: { [k: string]: string } = {
 export default function GrocerySelection({
   show,
   selectedIngredients,
+  selectedMeals,
 }: GrocerySelectionProp) {
   // const [activeMarker, setActiveMarker] = useState<string>('');
   const [selectedPlan, setSelectedPlan] = useState<string>('');
@@ -117,7 +119,7 @@ export default function GrocerySelection({
         modalShow={modalShow}
         setModalShow={setModalShow}
         plan={plan}
-        selectedIngredients={selectedIngredients}
+        selectedMeals={selectedMeals}
       />
       <Container>
         <div

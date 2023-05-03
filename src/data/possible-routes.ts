@@ -22,7 +22,10 @@ function store(name: string, address: number) {
 
 export type _Path = GeoJSON.FeatureCollection & { metadata?: any };
 
-export const possibleRoutesWithPath: [{ name: string; address: number }[], _Path[]][] = [
+export const possibleRoutesWithPath: [
+  { name: string; address: number }[],
+  _Path[],
+][] = [
   [
     [{ name: 'Safeway', address: 3 }],
     [

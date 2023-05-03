@@ -29,8 +29,6 @@ export default function App() {
     [],
   );
 
-  // useEffect(() => console.log(selectedIngredients), [selectedIngredients]);
-
   function handleTabChange(eventKey: string | null) {
     if (
       eventKey !== 'user-pref' &&
@@ -126,6 +124,7 @@ export default function App() {
         <GrocerySelection
           show={activeTab === 'groc-sel'}
           selectedIngredients={selectedIngredients}
+          selectedMeals={selectedMeals}
         />
       </div>
 

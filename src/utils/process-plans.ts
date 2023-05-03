@@ -1,9 +1,9 @@
-import { possibleRoutesWithPath } from "../data/possible-routes";
-import { Plan, _Path, _Store } from "../types";
-import { IngredientData, _Ingredient } from "../pages/ingredient-selection";
-import filterIngredients from "./filter-ingredients";
-import gasPrice from "./gas-price";
-import { stores as STORES } from "../data/stores";
+import { possibleRoutesWithPath } from '../data/possible-routes';
+import { Plan, _Path, _Store } from '../types';
+import { IngredientData, _Ingredient } from '../pages/ingredient-selection';
+import filterIngredients from './filter-ingredients';
+import gasPrice from './gas-price';
+import { stores as STORES } from '../data/stores';
 
 function getDistance(paths: _Path[]) {
   let distance = 0;
@@ -29,10 +29,12 @@ function getDuration(paths: _Path[]) {
   return duration;
 }
 
-function getGroceryCost(groceryList: {
-  store: _Store;
-  ingredients: _Ingredient[];
-}[]) {
+function getGroceryCost(
+  groceryList: {
+    store: _Store;
+    ingredients: _Ingredient[];
+  }[],
+) {
   let groceryCost = 0;
   groceryList.forEach(({ ingredients }) => {
     ingredients.forEach(({ idata }) => {
@@ -43,7 +45,12 @@ function getGroceryCost(groceryList: {
 }
 
 function comparePlan(p1: Plan, p2: Plan) {
-  const values = [(p: Plan) => p.totalCost, (p: Plan) => p.distance * 10, (p: Plan) => p.duration * 10, (p: Plan) => p.stores.length];
+  const values = [
+    (p: Plan) => p.totalCost,
+    (p: Plan) => p.distance * 10,
+    (p: Plan) => p.duration * 10,
+    (p: Plan) => p.stores.length,
+  ];
   if (values.every(v => Math.floor(v(p1)) === Math.floor(v(p2)))) {
     return 'equal';
   }
@@ -70,8 +77,8 @@ export default function processPlans(selectedIngredients: _Ingredient[]) {
 
     return stores.every(
       store =>
-        filterIngredients({ brand: store.name }, availableIngredients)
-          .length > 0,
+        filterIngredients({ brand: store.name }, availableIngredients).length >
+        0,
     );
   });
 
@@ -80,8 +87,9 @@ export default function processPlans(selectedIngredients: _Ingredient[]) {
     const duration = getDuration(paths);
 
     const availableIngredients = selectedIngredients.filter(
-      ({ idata }) => stores.findIndex(s => s.name === idata.store) + 1,
+      ({ idata }) => stores.findIndex(s => s.name === idata.store) !== -1,
     );
+    console.log(availableIngredients);
 
     const _stores: _Store[] = stores.map(({ name, address }) => ({
       name,

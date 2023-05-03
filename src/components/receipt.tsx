@@ -1,10 +1,13 @@
 import { faArrowDown } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Button, Card, Modal, Image } from 'react-bootstrap';
+import { meals } from '../data/meals';
+import { stores } from '../data/stores';
 import { ICONS } from '../pages/grocery-selection';
 import { _Ingredient } from '../pages/ingredient-selection';
 import { Plan, _Store } from '../types';
 import filterIngredients from '../utils/filter-ingredients';
+import gasPrice from '../utils/gas-price';
 import round2 from '../utils/round-2';
 
 const GAS_PRICE = 4.8; // $ / galon
@@ -15,14 +18,14 @@ interface ReceiptProp {
   modalShow: boolean;
   setModalShow: (s: boolean) => void;
   plan: Plan | undefined;
-  selectedIngredients: _Ingredient[];
+  selectedMeals: { [day: string]: string };
 }
 
 export default function Receipt({
   modalShow,
   setModalShow,
   plan,
-  selectedIngredients,
+  selectedMeals,
 }: ReceiptProp) {
   return (
     <Modal show={modalShow} onHide={() => setModalShow(false)}>
@@ -41,6 +44,10 @@ export default function Receipt({
             <span style={{ color: 'grey' }}>$</span>
             {plan && round2(plan.totalCost)}
           </h1>
+          <div className='mb-2'>
+            ${plan && round2(plan.groceryCost)} + $
+            {plan && round2(gasPrice(plan.distance))} Gas
+          </div>
           <div className='mb-2'>
             {plan && round2(plan.distance)} Miles |{' '}
             {plan && round2(plan.duration)} Minutes
@@ -75,10 +82,10 @@ export default function Receipt({
                       src={ICONS[s.name]}
                     ></Image>
                     <div style={{ width: '90%' }}>
-                      {filterIngredients(
-                        { brand: s.name },
-                        selectedIngredients,
-                      ).map(ReceiptIngredientEntry)}
+                      {plan.groceryList
+                        .filter(g => g.store.name === s.name)
+                        .flatMap(s => s.ingredients)
+                        .map(ReceiptIngredientEntry)}
                     </div>
                   </Card.Body>
                 </Card>
@@ -87,6 +94,29 @@ export default function Receipt({
           ) : (
             <></>
           )}
+          <hr
+            style={{
+              height: 2,
+              color: 'grey',
+              width: '90%',
+            }}
+          />
+          <h1>Recipes</h1>
+          {meals
+            .filter(m => Object.values(selectedMeals).some(sm => sm === m.name))
+            .map(m => (
+              <Card style={{ width: '80%' }} className='m-3'>
+                <Card.Img variant='top' src={`./foods/${m.name}.jpeg`} />
+                <Card.Body>
+                  <Card.Title className='d-flex justify-content-between align-items-center'>
+                    {m.name}
+                    <Button href={m.recipe_link} target='_blank'>
+                      Recipe
+                    </Button>
+                  </Card.Title>
+                </Card.Body>
+              </Card>
+            ))}
         </div>
       </Modal.Body>
       <Modal.Footer>
@@ -131,6 +161,7 @@ function GoogleMapNavigation({ stores }: { stores: _Store[] }) {
   return (
     <Button
       variant='primary'
+      target='_blank'
       href={
         GMAP_URL +
         stores.map(({ address }) => address.split(' ').join('+')).join('/')
