@@ -30,7 +30,6 @@ export default function App() {
   const [preferences, setPreferences] =
     useState<Preferences>(defaultPreferences);
   const [activeTab, setActiveTab] = useState<NavKey>('user-pref');
-  //Sunny tried this
   const [selectedMeals, setSelectedMeals] = useState<{ [key: string]: string }>(
     {},
   );
@@ -38,7 +37,7 @@ export default function App() {
     { ingredient: string; ingredientData: IngredientData }[]
   >([]);
 
-  useEffect(() => console.log(selectedIngredients), [selectedIngredients]);
+  // useEffect(() => console.log(selectedIngredients), [selectedIngredients]);
 
   function handleTabChange(eventKey: string | null) {
     if (

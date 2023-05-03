@@ -19,6 +19,7 @@ import { faCaretRight, faCircleInfo } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { IngredientData } from './ingredient-selection';
 import Receipt from '../components/receipt';
+import { possibleRoutes } from '../data/possible-routes';
 
 export const CURRENT_LOCATION: LatLngTuple = [37.87607, -122.258502];
 
@@ -182,6 +183,40 @@ const defaultPlans: Plan[] = [
     ],
   },
 ];
+function pair<T>(arr: T[]): [T, T][] {
+  return arr.slice(1).map((d, i) => [arr[i], d]);
+}
+
+(async function () {
+  for (const route of possibleRoutes) {
+    const path = [
+      CURRENT_LOCATION,
+      ...route.map(({ name, address }) => stores[name][address].location),
+      CURRENT_LOCATION,
+    ];
+    console.log(route);
+    const r = [];
+    for (const [from, to] of pair(path)) {
+      const url = `https://api.openrouteservice.org/v2/directions/driving-car?api_key=5b3ce3597851110001cf6248f4ff297751c6452e8fcabef392024298&start=${from
+        .reverse()
+        .join(',')}&end=${to.reverse().join(',')}`;
+      console.log(url);
+      r.push(
+        await fetch(url, {
+          method: 'GET',
+          // withCredentials: true,
+          // crossorigin: true,
+          mode: 'no-cors',
+        })
+          .then(response => response)
+          .catch(e => console.log(e)),
+      );
+      break;
+    }
+    console.log(r);
+    break;
+  }
+})();
 
 export default function GrocerySelection({
   show,

@@ -1,16 +1,14 @@
-import { IngredientData } from "../pages/ingredient-selection";
-import { Store } from "../types";
+import { IngredientData } from '../pages/ingredient-selection';
+import { Store } from '../types';
 
 export default function filterIngredients(
   store: Store,
   ingredients: { ingredient: string; ingredientData: IngredientData }[],
 ) {
-  return (
-    ingredients
-      .sort(byDiscountedPrice)
-      .filter(cheapest)
-      .filter(({ ingredientData }) => ingredientData.store === store.brand)
-  );
+  return ingredients
+    .sort(byDiscountedPrice)
+    .filter(cheapest)
+    .filter(({ ingredientData }) => ingredientData.store === store.brand);
 }
 
 function byDiscountedPrice(
