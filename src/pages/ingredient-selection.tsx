@@ -1,14 +1,14 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { meals } from '../data/meals';
 import { ingredient } from '../data/ingredients';
 import { Card, Form, ListGroup, Image } from 'react-bootstrap';
 import { ICONS } from './grocery-selection';
 
+export type _Ingredient = { ingredient: string; idata: IngredientData };
+
 interface IngredientSelectionProp {
   selectedMeals: { [key: string]: string };
-  setSelectedIngredients: (
-    d: { ingredient: string; ingredientData: IngredientData }[],
-  ) => void;
+  setSelectedIngredients: (d: _Ingredient[]) => void;
 }
 
 export type IngredientData = {
@@ -165,7 +165,7 @@ export default function IngredientSelection({
       [...data_map].flatMap(([ingredient, ingredientBrands]) =>
         ingredientBrands
           .filter(({ id }) => brands.has(id))
-          .map(d => ({ ingredient, ingredientData: d })),
+          .map(d => ({ ingredient, idata: d })),
       ),
     );
   }, [selectedBrands]);

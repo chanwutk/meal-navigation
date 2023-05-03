@@ -1,31 +1,23 @@
-import { IngredientData } from '../pages/ingredient-selection';
-import { Store } from '../types';
+import { IngredientData, _Ingredient } from '../pages/ingredient-selection';
 
 export default function filterIngredients(
-  store: Store,
-  ingredients: { ingredient: string; ingredientData: IngredientData }[],
+  store: { brand: string },
+  ingredients: _Ingredient[],
 ) {
   return ingredients
     .sort(byDiscountedPrice)
     .filter(cheapest)
-    .filter(({ ingredientData }) => ingredientData.store === store.brand);
+    .filter(({ idata }) => idata.store === store.brand);
 }
 
-function byDiscountedPrice(
-  ingredient1: { ingredientData: IngredientData },
-  ingredient2: { ingredientData: IngredientData },
-) {
+function byDiscountedPrice(ingredient1: _Ingredient, ingredient2: _Ingredient) {
   return (
-    ingredient1.ingredientData.discount_price -
-    ingredient2.ingredientData.discount_price
+    ingredient1.idata.discount_price -
+    ingredient2.idata.discount_price
   );
 }
 
-function cheapest(
-  ingredient: { ingredient: string },
-  idx: number,
-  ingredientArr: { ingredient: string }[],
-) {
+function cheapest(ingredient: _Ingredient, idx: number, ingredientArr: _Ingredient[]) {
   return (
     idx ===
     ingredientArr

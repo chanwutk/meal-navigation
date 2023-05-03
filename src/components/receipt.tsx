@@ -1,16 +1,21 @@
 import { faArrowDown } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Button, Card, Modal, Image } from 'react-bootstrap';
-import { ICONS, Plan } from '../pages/grocery-selection';
-import { IngredientData } from '../pages/ingredient-selection';
+import { ICONS, Plan, _Store } from '../pages/grocery-selection';
+import { IngredientData, _Ingredient } from '../pages/ingredient-selection';
 import { Store } from '../types';
 import filterIngredients from '../utils/filter-ingredients';
+import round2 from '../utils/round-2';
+
+const GAS_PRICE = 4.8; // $ / galon
+const CAR_EFFICIENCY = 30; // miles / galon
+export const DRIVING_COST = GAS_PRICE / CAR_EFFICIENCY; // $ / miles
 
 interface ReceiptProp {
   modalShow: boolean;
   setModalShow: (s: boolean) => void;
-  plan: Plan;
-  selectedIngredients: { ingredient: string; ingredientData: IngredientData }[];
+  plan: Plan | undefined;
+  selectedIngredients: _Ingredient[];
 }
 
 export default function Receipt({
@@ -34,11 +39,11 @@ export default function Receipt({
             }}
           >
             <span style={{ color: 'grey' }}>$</span>
-            {plan && plan.groceryCost + plan.travelCost}
+            {plan && round2(plan.totalCost)}
           </h1>
           <div className='mb-2'>
-            {plan && plan.travelDistance} Miles | {plan && plan.travelTime}{' '}
-            Minutes
+            {plan && round2(plan.distance)} Miles |{' '}
+            {plan && round2(plan.duration)} Minutes
           </div>
           <hr
             style={{
@@ -50,7 +55,7 @@ export default function Receipt({
           {plan ? (
             plan.stores.map((s, i) => (
               <div
-                key={`modal-${i}-${s.brand}`}
+                key={`modal-${i}-${s.name}`}
                 style={{ width: '90%' }}
                 className='d-flex flex-column align-items-center'
               >
@@ -67,13 +72,14 @@ export default function Receipt({
                       className='m-1'
                       width={100}
                       height={100}
-                      src={ICONS[s.brand]}
+                      src={ICONS[s.name]}
                     ></Image>
-                    <Card.Text style={{ width: '90%' }}>
-                      {filterIngredients(s, selectedIngredients).map(
-                        ReceiptIngredientEntry,
-                      )}
-                    </Card.Text>
+                    <div style={{ width: '90%' }}>
+                      {filterIngredients(
+                        { brand: s.name },
+                        selectedIngredients,
+                      ).map(ReceiptIngredientEntry)}
+                    </div>
                   </Card.Body>
                 </Card>
               </div>
@@ -93,25 +99,26 @@ export default function Receipt({
   );
 }
 
-function ReceiptIngredientEntry({
-  ingredient,
-  ingredientData,
-}: {
-  ingredient: string;
-  ingredientData: IngredientData;
-}) {
+function ReceiptIngredientEntry(
+  { ingredient, idata }: _Ingredient,
+  idx: number,
+) {
   return (
     <div
       className='d-flex flex-row justify-content-between'
       style={{ width: '100%' }}
+      key={`receipt-ingredient-entry-${idx}`}
     >
-      {/* {ingredient} {JSON.stringify(ingredientData)} */}
+      {/* {ingredient} {JSON.stringify(idata)} */}
       <div className='d-flex flex-column align-items-begin'>
-        <div>{ingredient}</div>
-        <div style={{ fontSize: 10 }}>{ingredientData.name}</div>
+        <div>
+          {ingredient.slice(0, 1).toUpperCase()}
+          {ingredient.slice(1)}
+        </div>
+        <div style={{ fontSize: 10 }}>{idata.name}</div>
       </div>
       <div className='d-flex flex-column align-items-begin'>
-        <div>${ingredientData.discount_price}</div>
+        <div>${idata.discount_price}</div>
         {/* <div style={{ fontSize: 10 }}>i</div> */}
       </div>
     </div>
@@ -120,7 +127,7 @@ function ReceiptIngredientEntry({
 
 const GMAP_URL = 'https://www.google.com/maps/dir/';
 
-function GoogleMapNavigation({ stores }: { stores: Store[] }) {
+function GoogleMapNavigation({ stores }: { stores: _Store[] }) {
   return (
     <Button
       variant='primary'

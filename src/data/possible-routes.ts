@@ -1,6 +1,3 @@
-import { CURRENT_LOCATION } from '../pages/grocery-selection';
-import { stores } from './stores';
-
 export const possibleRoutes = [
   [store('Safeway', 3)],
   [store('Safeway', 2)],
@@ -23,7 +20,9 @@ function store(name: string, address: number) {
   return { name, address };
 }
 
-export const possibleRoutesWithPath: [{ name: string; address: number }[], (GeoJSON.GeoJSON & { metadata?: any })[]][] = [
+export type _Path = GeoJSON.FeatureCollection & { metadata?: any };
+
+export const possibleRoutesWithPath: [{ name: string; address: number }[], _Path[]][] = [
   [
     [{ name: 'Safeway', address: 3 }],
     [

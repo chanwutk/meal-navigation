@@ -9,31 +9,44 @@ import {
 } from 'react-leaflet';
 import { useEffect, useState } from 'react';
 
-import { stores } from '../data/stores';
+import { stores as STORES } from '../data/stores';
 import { paths } from '../data/paths';
 
 import 'leaflet/dist/leaflet.css';
 import { Image, Container, Dropdown, DropdownButton } from 'react-bootstrap';
-import { Store } from '../types';
 import { faCaretRight, faCircleInfo } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { IngredientData } from './ingredient-selection';
+import { _Ingredient } from './ingredient-selection';
 import Receipt from '../components/receipt';
-import { possibleRoutes } from '../data/possible-routes';
+import round2 from '../utils/round-2';
+import processPlans from '../utils/process-plans';
 
 export const CURRENT_LOCATION: LatLngTuple = [37.87607, -122.258502];
 
-export interface Plan {
-  stores: Store[];
-  travelCost: number;
+export type _Store = {
+  name: string;
+  address: string;
+  idx: number;
+};
+export type _Path = GeoJSON.FeatureCollection & {
+  metadata?: any;
+};
+export type Plan = {
+  stores: _Store[];
+  paths: _Path[];
+  distance: number;
+  duration: number;
   groceryCost: number;
-  travelTime: number;
-  travelDistance: number;
-}
+  totalCost: number;
+  groceryList: {
+    store: _Store;
+    ingredients: _Ingredient[];
+  }[];
+};
 
 interface GrocerySelectionProp {
   show: boolean;
-  selectedIngredients: { ingredient: string; ingredientData: IngredientData }[];
+  selectedIngredients: _Ingredient[];
 }
 
 const TILES = {
@@ -51,173 +64,6 @@ export const ICONS: { [k: string]: string } = {
   Safeway: './icon-safeway.png',
 };
 
-interface MapOpsProp {
-  show: boolean;
-}
-
-function MapOps({ show }: MapOpsProp) {
-  const map = useMap();
-  useEffect(() => {
-    if (show) {
-      map.invalidateSize();
-    }
-  }, [show]);
-  return null;
-}
-
-const defaultPlans: Plan[] = [
-  {
-    stores: [
-      {
-        brand: 'Whole Food',
-        address: '5110 Telegraph Ave, Oakland, CA 94609',
-        phone: '(510) 903-2222',
-        time: '08:00-21:00',
-        location: [37.837657, -122.262078],
-      },
-      {
-        brand: "Trader Joe's",
-        address: '5700 Christie Ave, Emeryville, CA 94608',
-        phone: '(510) 658-8091',
-        time: '08:00-21:00',
-        location: [37.837047, -122.293903],
-      },
-      {
-        brand: 'Safeway',
-        address: '6310 College Ave, Oakland, CA 94618',
-        phone: '(510) 985-0012',
-        time: '05:00-24:00',
-        location: [37.85073, -122.252364],
-      },
-    ],
-    travelCost: 3,
-    travelTime: 15,
-    travelDistance: 3,
-    groceryCost: 30,
-  },
-  {
-    travelCost: 2,
-    travelTime: 20,
-    travelDistance: 3,
-    groceryCost: 60,
-    stores: [
-      {
-        brand: "Trader Joe's",
-        address: '5727 College Ave, Oakland, CA 94618',
-        phone: '(510) 923-9428',
-        time: '08:00-21:00',
-        location: [37.845923, -122.252565],
-      },
-      {
-        brand: 'Whole Food',
-        address: '1025 Gilman St, Berkeley, CA 94710',
-        phone: '(510) 809-8293',
-        time: '08:00-22:00',
-        location: [37.880569, -122.297177],
-      },
-      {
-        brand: 'Safeway',
-        address: '1550 Shattuck Ave., Berkeley, CA 94709',
-        phone: '(510) 841-7942',
-        time: '06:00-23:00',
-        location: [37.878793, -122.269677],
-      },
-    ],
-  },
-  {
-    travelCost: 1,
-    travelTime: 2,
-    travelDistance: 1,
-    groceryCost: 30,
-    stores: [
-      {
-        brand: 'Safeway',
-        address: '1444 Shattuck Place, Berkeley, CA 94709',
-        phone: '(510) 526-3086',
-        time: '05:00-24:00',
-        location: [37.880819, -122.269725],
-      },
-      {
-        brand: "Trader Joe's",
-        address: '5727 College Ave, Oakland, CA 94618',
-        phone: '(510) 923-9428',
-        time: '08:00-21:00',
-        location: [37.845923, -122.252565],
-      },
-      {
-        brand: 'Whole Food',
-        address: '1025 Gilman St, Berkeley, CA 94710',
-        phone: '(510) 809-8293',
-        time: '08:00-22:00',
-        location: [37.880569, -122.297177],
-      },
-    ],
-  },
-  {
-    travelCost: 1,
-    travelTime: 2,
-    travelDistance: 1,
-    groceryCost: 30,
-    stores: [
-      {
-        brand: "Trader Joe's",
-        address: '5727 College Ave, Oakland, CA 94618',
-        phone: '(510) 923-9428',
-        time: '08:00-21:00',
-        location: [37.845923, -122.252565],
-      },
-      {
-        brand: 'Safeway',
-        address: '1444 Shattuck Place, Berkeley, CA 94709',
-        phone: '(510) 526-3086',
-        time: '05:00-24:00',
-        location: [37.880819, -122.269725],
-      },
-      {
-        brand: 'Whole Food',
-        address: '1025 Gilman St, Berkeley, CA 94710',
-        phone: '(510) 809-8293',
-        time: '08:00-22:00',
-        location: [37.880569, -122.297177],
-      },
-    ],
-  },
-];
-function pair<T>(arr: T[]): [T, T][] {
-  return arr.slice(1).map((d, i) => [arr[i], d]);
-}
-
-(async function () {
-  for (const route of possibleRoutes) {
-    const path = [
-      CURRENT_LOCATION,
-      ...route.map(({ name, address }) => stores[name][address].location),
-      CURRENT_LOCATION,
-    ];
-    console.log(route);
-    const r = [];
-    for (const [from, to] of pair(path)) {
-      const url = `https://api.openrouteservice.org/v2/directions/driving-car?api_key=5b3ce3597851110001cf6248f4ff297751c6452e8fcabef392024298&start=${from
-        .reverse()
-        .join(',')}&end=${to.reverse().join(',')}`;
-      console.log(url);
-      r.push(
-        await fetch(url, {
-          method: 'GET',
-          // withCredentials: true,
-          // crossorigin: true,
-          mode: 'no-cors',
-        })
-          .then(response => response)
-          .catch(e => console.log(e)),
-      );
-      break;
-    }
-    console.log(r);
-    break;
-  }
-})();
-
 export default function GrocerySelection({
   show,
   selectedIngredients,
@@ -226,8 +72,8 @@ export default function GrocerySelection({
   const [selectedPlan, setSelectedPlan] = useState<string>('');
   const [modalShow, setModalShow] = useState<boolean>(false);
 
-  const [plans, setPlans] = useState<Plan[]>(defaultPlans);
-  const [plan, setPlan] = useState<Plan>(plans[0]);
+  const [plans, setPlans] = useState<Plan[]>([]);
+  const [plan, setPlan] = useState<Plan>();
 
   useEffect(() => {
     const _stores: {
@@ -236,7 +82,7 @@ export default function GrocerySelection({
       location: [number, number];
     }[] = [];
 
-    Object.entries(stores).map(([name, stores]) => {
+    Object.entries(STORES).map(([name, stores]) => {
       stores.map(s => {
         const [lat, lon] = s.location;
         _stores.push({
@@ -249,19 +95,26 @@ export default function GrocerySelection({
   }, []);
 
   useEffect(() => {
+    console.log(selectedPlan);
     setPlan(
       plans.filter(p =>
-        selectedPlan.split('_').every((a, i) => a === p.stores[i].address),
+        selectedPlan
+          .split('_')
+          .every((a, i) => a.split('-')[1] === p.stores[i].address),
       )[0],
     );
   }, [selectedPlan]);
 
-  function planString(plan: Plan) {
-    return plan.stores.map(s => s.address).join('_');
+  useEffect(() => {
+    setPlans(processPlans(selectedIngredients));
+  }, [selectedIngredients]);
+
+  function planString(stores: _Store[]) {
+    return stores.map(s => `${s.name}-${s.address}`).join('_');
   }
 
-  function planColor(plan: Plan) {
-    return selectedPlan === planString(plan)
+  function planColor(stores: _Store[]) {
+    return selectedPlan === planString(stores)
       ? { backgroundColor: 'lightgray' }
       : {};
   }
@@ -270,8 +123,8 @@ export default function GrocerySelection({
     return (
       <Dropdown.Item
         key={`plan-key-${idx}`}
-        eventKey={planString(plan)}
-        style={planColor(plan)}
+        eventKey={planString(plan.stores)}
+        style={planColor(plan.stores)}
       >
         <div className='d-flex flex-row justify-content-between'>
           <DropdownCost plan={plan} />
@@ -341,8 +194,8 @@ export default function GrocerySelection({
               )}
               pathOptions={
                 activeMarker === key
-                  ? { color: 'red', opacity: 1 }
-                  : { color: 'gray', opacity: 0.5 }
+                  ? { color: '#00bfff', opacity: 1, weight: 5 }
+                  : { color: 'gray', opacity: 0.5, weight: 3 }
               }
             ></Polyline>
           ))}
@@ -372,22 +225,32 @@ export default function GrocerySelection({
   );
 }
 
+function MapOps({ show }: { show: boolean }) {
+  const map = useMap();
+  useEffect(() => {
+    if (show) {
+      map.invalidateSize();
+    }
+  }, [show]);
+  return null;
+}
+
 function DropdownCost({ plan }: { plan: Plan }) {
   return (
     <div className='d-flex flex-row justify-content-between align-items-center'>
       <div style={{ fontWeight: 'bolder', fontSize: 40 }}>
-        ${plan.travelCost + plan.groceryCost}
+        ${round2(plan.totalCost)}
       </div>
       <div className='d-flex flex-column align-items-start m-2'>
-        <div style={{ lineHeight: '100%' }}>{plan.travelDistance} mi.</div>
-        <div style={{ lineHeight: '100%' }}>{plan.travelTime} min.</div>
+        <div style={{ lineHeight: '100%' }}>{round2(plan.distance)} mi.</div>
+        <div style={{ lineHeight: '100%' }}>{round2(plan.duration)} min.</div>
       </div>
     </div>
   );
 }
 
-function StoreOrder({ stores }: { stores: Store[] }) {
-  function brandLogo(store: Store, idx: number) {
+function StoreOrder({ stores }: { stores: _Store[] }) {
+  function brandLogo(store: _Store, idx: number) {
     return (
       <div
         key={`img-plan-${idx}-with-caret`}
@@ -395,11 +258,11 @@ function StoreOrder({ stores }: { stores: Store[] }) {
       >
         {idx ? <FontAwesomeIcon icon={faCaretRight} size='2xs' /> : ''}
         <Image
-          key={`img-plan-${idx}-${store.brand}`}
+          key={`img-plan-${idx}-${store.name}`}
           className='m-1'
           width={30}
           height={30}
-          src={ICONS[store.brand]}
+          src={ICONS[store.name]}
         ></Image>
       </div>
     );
