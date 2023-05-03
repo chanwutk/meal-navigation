@@ -1,5 +1,5 @@
 import { possibleRoutesWithPath } from "../data/possible-routes";
-import { Plan, _Path, _Store } from "../pages/grocery-selection";
+import { Plan, _Path, _Store } from "../types";
 import { IngredientData, _Ingredient } from "../pages/ingredient-selection";
 import filterIngredients from "./filter-ingredients";
 import gasPrice from "./gas-price";
