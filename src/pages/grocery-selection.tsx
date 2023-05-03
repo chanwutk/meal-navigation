@@ -13,20 +13,14 @@ import { stores } from '../data/stores';
 import { paths } from '../data/paths';
 
 import 'leaflet/dist/leaflet.css';
-import {
-  ToggleButton,
-  Image,
-  Container,
-  Dropdown,
-  DropdownButton,
-} from 'react-bootstrap';
+import { Image, Container, Dropdown, DropdownButton } from 'react-bootstrap';
 import { Store } from '../types';
 import { faCaretRight, faCircleInfo } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { IngredientData } from './ingredient-selection';
 import Receipt from '../components/receipt';
 
-const CURRENT_LOCATION: LatLngTuple = [37.87607, -122.258502];
+export const CURRENT_LOCATION: LatLngTuple = [37.87607, -122.258502];
 
 export interface Plan {
   stores: Store[];
@@ -227,6 +221,31 @@ export default function GrocerySelection({
     );
   }, [selectedPlan]);
 
+  function planString(plan: Plan) {
+    return plan.stores.map(s => s.address).join('_');
+  }
+
+  function planColor(plan: Plan) {
+    return selectedPlan === planString(plan)
+      ? { backgroundColor: 'lightgray' }
+      : {};
+  }
+
+  function planDropdownEntry(plan: Plan, idx: number) {
+    return (
+      <Dropdown.Item
+        key={`plan-key-${idx}`}
+        eventKey={planString(plan)}
+        style={planColor(plan)}
+      >
+        <div className='d-flex flex-row justify-content-between'>
+          <DropdownCost plan={plan} />
+          <StoreOrder stores={plan.stores} />
+        </div>
+      </Dropdown.Item>
+    );
+  }
+
   return (
     <>
       <Receipt
@@ -241,38 +260,17 @@ export default function GrocerySelection({
           style={{ width: '100%' }}
         >
           <DropdownButton
-            id='dropdown-basic-button'
             title='Select Grocery Plan'
             autoClose='outside'
             onSelect={key => key && setSelectedPlan(key)}
           >
-            {plans.map((plan, idx) => (
-              <Dropdown.Item
-                key={`plan-key-${idx}`}
-                id={`plan-id-${idx}`}
-                type='radio'
-                variant='outline-dark'
-                eventKey={plan.stores.map(s => s.address).join('_')}
-                style={
-                  selectedPlan === plan.stores.map(s => s.address).join('_')
-                    ? { backgroundColor: 'lightgray' }
-                    : {}
-                }
-              >
-                <div className='d-flex flex-row justify-content-between'>
-                  <DropdownCost plan={plan} />
-                  <StoreOrder stores={plan.stores} />
-                </div>
-              </Dropdown.Item>
-            ))}
+            {plans.map(planDropdownEntry)}
           </DropdownButton>
-          <div style={{ fontSize: 30 }}>
-            <FontAwesomeIcon
-              icon={faCircleInfo}
-              style={{ cursor: 'pointer' }}
-              onClick={() => selectedPlan !== '' && setModalShow(true)}
-            />
-          </div>
+          <FontAwesomeIcon
+            icon={faCircleInfo}
+            style={{ cursor: 'pointer', fontSize: 30 }}
+            onClick={() => selectedPlan && setModalShow(true)}
+          />
         </div>
       </Container>
       <MapContainer
