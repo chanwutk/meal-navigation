@@ -142,7 +142,7 @@ export default function GrocerySelection({
       </Container>
       <MapContainer
         center={CURRENT_LOCATION}
-        zoom={16}
+        zoom={15}
         scrollWheelZoom={true}
         zoomControl={false}
         minZoom={12}
