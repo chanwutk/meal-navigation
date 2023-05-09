@@ -5,7 +5,7 @@
 [![Vite](https://img.shields.io/badge/vite-%23646CFF.svg?style=for-the-badge&logo=vite&logoColor=white)](https://vitejs.dev/)
 [![Github Pages](https://img.shields.io/badge/github%20pages-121013?style=for-the-badge&logo=github&logoColor=white)](https://chanwutk.github.io/meal-navigation/)
 
-chanwutk.github.io/meal-navigation
+[chanwutk.github.io/meal-navigation](https://chanwutk.github.io/meal-navigation)
 
 ## Setup
 
