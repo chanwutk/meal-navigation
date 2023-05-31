@@ -2,10 +2,7 @@ import { useEffect, useState } from 'react';
 import { Container, Navbar, Nav, Button, ButtonGroup } from 'react-bootstrap';
 
 import UserPreferences from './pages/user-preferences';
-import IngredientSelection, {
-  IngredientData,
-  _Ingredient,
-} from './pages/ingredient-selection';
+import IngredientSelection, { _Ingredient } from './pages/ingredient-selection';
 import GrocerySelection from './pages/grocery-selection';
 import MealSelection from './pages/meal-selection';
 import { Preferences } from './data/preferences';
